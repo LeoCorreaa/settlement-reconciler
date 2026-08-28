@@ -2,22 +2,34 @@
   "case_id": "case_06",
   "divergences": [
     {
-      "order_id": "MLB-060014",
-      "type": "WRONG_SHIPPING_DEDUCTION",
-      "impact_brl": "21.90",
-      "note": "shipping deducted twice (21.90 extra)"
-    },
-    {
-      "order_id": "MLB-060018",
+      "order_id": "MLB-060034",
       "type": "REFUND_AMOUNT_MISMATCH",
-      "impact_brl": "24.77",
-      "note": "refund debited the gross but did not return the commission (24.77 shorted)"
+      "impact_brl": "185.32",
+      "note": "refund debited the gross but did not return the commission (185.32 shorted)"
     },
     {
-      "order_id": "MLB-060020",
+      "order_id": "MLB-060038",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "1.93",
+      "note": "commission charged 1.78 pp above the contracted rate (1.93 extra)"
+    },
+    {
+      "order_id": "MLB-060087",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "172.10",
+      "note": "paid order has no settlement rows; seller is owed 172.10"
+    },
+    {
+      "order_id": "MLB-060091",
       "type": "DUPLICATE_SETTLEMENT",
-      "impact_brl": "-553.78",
-      "note": "payment settled twice; 553.78 will be clawed back"
+      "impact_brl": "-47.96",
+      "note": "payment settled twice; 47.96 will be clawed back"
+    },
+    {
+      "order_id": "MLB-060094",
+      "type": "WRONG_SHIPPING_DEDUCTION",
+      "impact_brl": "18.00",
+      "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
     }
   ]
 }

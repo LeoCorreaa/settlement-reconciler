@@ -74,6 +74,7 @@ def main() -> None:
 
     per_case = []
     totals = {"tp": 0, "fp": 0, "fn": 0, "input_tokens": 0, "output_tokens": 0,
+              "cache_read": 0, "cache_write": 0,
               "seconds": 0.0, "errors": 0, "clean_fp": 0}
 
     for case_dir in case_dirs:
@@ -97,6 +98,8 @@ def main() -> None:
         totals["fn"] += n_fn
         totals["input_tokens"] += result["usage"]["input_tokens"]
         totals["output_tokens"] += result["usage"]["output_tokens"]
+        totals["cache_read"] += result["usage"].get("cache_read_input_tokens", 0)
+        totals["cache_write"] += result["usage"].get("cache_creation_input_tokens", 0)
         totals["seconds"] += elapsed
         if meta["difficulty"] == "clean":
             totals["clean_fp"] += n_fp
@@ -130,12 +133,14 @@ def main() -> None:
     precision = tp / (tp + fp) if tp + fp else 0.0
     recall = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
-    cost = config.estimate_cost_usd(args.model, totals["input_tokens"], totals["output_tokens"])
+    cost = config.estimate_cost_usd(args.model, totals["input_tokens"], totals["output_tokens"],
+                                    totals["cache_read"], totals["cache_write"])
 
     print(f"\n=== {label} aggregate ===")
     print(f"precision={precision:.3f} recall={recall:.3f} F1={f1:.3f} "
           f"(tp={tp} fp={fp} fn={fn}, clean-case FPs={totals['clean_fp']})")
     print(f"tokens: in={totals['input_tokens']:,} out={totals['output_tokens']:,} "
+          f"cache_read={totals['cache_read']:,} cache_write={totals['cache_write']:,} "
           f"cost=${cost:.2f} time={totals['seconds']:.0f}s errors={totals['errors']}")
     print("\nREADME row:")
     print(f"| {label} | {f1:.3f} | {precision:.3f} | {recall:.3f} | "
@@ -153,6 +158,8 @@ def main() -> None:
             "clean_case_fps": totals["clean_fp"],
             "input_tokens": totals["input_tokens"],
             "output_tokens": totals["output_tokens"],
+            "cache_read_tokens": totals["cache_read"],
+            "cache_write_tokens": totals["cache_write"],
             "cost_usd": round(cost, 4), "seconds": round(totals["seconds"], 1),
             "errors": totals["errors"],
         },

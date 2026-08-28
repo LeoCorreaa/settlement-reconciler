@@ -1,0 +1,90 @@
+{
+  "label": "agent_v2",
+  "solver": "agent",
+  "variant": "v2",
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-28T17:02:02+00:00",
+  "aggregate": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 4,
+    "fp": 0,
+    "fn": 0,
+    "clean_case_fps": 0,
+    "input_tokens": 16,
+    "output_tokens": 8866,
+    "cache_read_tokens": 55258,
+    "cache_write_tokens": 19274,
+    "cost_usd": 0.1479,
+    "seconds": 102.3,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_03",
+      "difficulty": "normal",
+      "n_truth": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-030005",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030018",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030022",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-030048",
+          "MISSING_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-030018",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order is toys/premium, gross 5114.31, expected commission = 17% * 5114.31 = 869.43 (no low-ticket fee, unit_price 1704.77 >= 79). Settlement row ST-0300021 charged fee -969.16, i.e. 99.73 BRL more than the contractual commission. Shipping (-21.90, standard) matches expectation, so the entire delta is an excess commission charge.",
+          "impact_brl": "99.73"
+        },
+        {
+          "order_id": "MLB-030005",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order is home/premium, gross 2006.08, expected commission = 17% * 2006.08 = 341.03 (unit_price 1003.04 >= 79, no low-ticket fee). Settlement row ST-0300006 charged fee -400.21, 59.18 BRL above the contractual commission. Shipping (-39.90, heavy) matches expectation, isolating the delta to the commission line.",
+          "impact_brl": "59.18"
+        },
+        {
+          "order_id": "MLB-030022",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order MLB-030022 (electronics/premium, gross 64.74, qty 1) should settle once for net 48.13 (commission 16% + 6.25 low-ticket fee = 16.61). Two identical payment rows were posted: ST-0300026 (2026-07-18) and ST-0300057 (2026-07-19), each gross 64.74 / fee -16.61 / net 48.13, both carrying the full fee (not a legitimate split, which would put fees only on the first row). The order was paid out twice for a total net of 96.26 instead of 48.13.",
+          "impact_brl": "-48.13"
+        },
+        {
+          "order_id": "MLB-030048",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order MLB-030048 (fashion/classic, gross 42.15, delivered) has zero settlement rows. Expected: commission 13% + 6.25 low-ticket fee (unit_price 42.15 < 79) = 11.73, no shipping deducted (gross < 79), expected net = 30.42. No payment row exists on the statement at all.",
+          "impact_brl": "30.42"
+        }
+      ],
+      "steps": 8,
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 8866,
+        "cache_read_input_tokens": 55258,
+        "cache_creation_input_tokens": 19274
+      },
+      "seconds": 102.3,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\settlement-reconciler\\trajectories\\case_03_agent_v2.jsonl"
+    }
+  ]
+}

@@ -48,6 +48,13 @@ DIVERGENCE_TYPES = [
 ]
 
 
-def estimate_cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
+def estimate_cost_usd(model: str, input_tokens: int, output_tokens: int,
+                      cache_read_tokens: int = 0, cache_write_tokens: int = 0) -> float:
+    """Cache reads bill at 10% of input price, cache writes at 125%."""
     input_price, output_price = PRICES_PER_MTOK.get(model, (0.0, 0.0))
-    return (input_tokens * input_price + output_tokens * output_price) / 1_000_000
+    return (
+        input_tokens * input_price
+        + cache_read_tokens * input_price * 0.10
+        + cache_write_tokens * input_price * 1.25
+        + output_tokens * output_price
+    ) / 1_000_000

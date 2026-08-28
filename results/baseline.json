@@ -1,0 +1,81 @@
+{
+  "label": "baseline",
+  "solver": "baseline",
+  "variant": null,
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-28T16:57:29+00:00",
+  "aggregate": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 0,
+    "fn": 9,
+    "clean_case_fps": 0,
+    "input_tokens": 9047,
+    "output_tokens": 16000,
+    "cost_usd": 0.1781,
+    "seconds": 116.5,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_12",
+      "difficulty": "hard",
+      "n_truth": 9,
+      "tp": 0,
+      "fp": 0,
+      "fn": 9,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-120009",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-120010",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-120023",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-120024",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120042",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-120062",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-120069",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-120077",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-129265",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 9047,
+        "output_tokens": 16000
+      },
+      "seconds": 116.5,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    }
+  ]
+}

@@ -2,57 +2,63 @@
   "case_id": "case_12",
   "divergences": [
     {
-      "order_id": "MLB-120009",
-      "type": "REFUND_NOT_SETTLED",
-      "impact_brl": "-148.48",
-      "note": "order was refunded but no refund row exists; 148.48 was never debited"
-    },
-    {
-      "order_id": "MLB-120010",
+      "order_id": "MLB-120048",
       "type": "DUPLICATE_SETTLEMENT",
-      "impact_brl": "-372.31",
-      "note": "payment settled twice; 372.31 will be clawed back"
+      "impact_brl": "-59.61",
+      "note": "payment settled twice; 59.61 will be clawed back"
     },
     {
-      "order_id": "MLB-120023",
+      "order_id": "MLB-120052",
       "type": "REFUND_AMOUNT_MISMATCH",
-      "impact_brl": "175.88",
-      "note": "refund debited the gross but did not return the commission (175.88 shorted)"
+      "impact_brl": "160.36",
+      "note": "refund debited the gross but did not return the commission (160.36 shorted)"
     },
     {
-      "order_id": "MLB-120024",
-      "type": "FEE_OVERCHARGE",
-      "impact_brl": "108.54",
-      "note": "commission charged 2.71 pp above the contracted rate (108.54 extra)"
+      "order_id": "MLB-120103",
+      "type": "REFUND_NOT_SETTLED",
+      "impact_brl": "-136.56",
+      "note": "order was refunded but no refund row exists; 136.56 was never debited"
     },
     {
-      "order_id": "MLB-120042",
+      "order_id": "MLB-120115",
       "type": "WRONG_SHIPPING_DEDUCTION",
       "impact_brl": "18.00",
       "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
     },
     {
-      "order_id": "MLB-120062",
+      "order_id": "MLB-120185",
+      "type": "WRONG_SHIPPING_DEDUCTION",
+      "impact_brl": "18.00",
+      "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
+    },
+    {
+      "order_id": "MLB-120224",
       "type": "CANCELLED_BUT_SETTLED",
-      "impact_brl": "-235.72",
+      "impact_brl": "-153.01",
       "note": "cancelled order was settled as if sold; expect a clawback"
     },
     {
-      "order_id": "MLB-120069",
-      "type": "MISSING_SETTLEMENT",
-      "impact_brl": "159.89",
-      "note": "paid order has no settlement rows; seller is owed 159.89"
-    },
-    {
-      "order_id": "MLB-120077",
+      "order_id": "MLB-120236",
       "type": "FEE_OVERCHARGE",
-      "impact_brl": "27.18",
-      "note": "commission charged 1.75 pp above the contracted rate (27.18 extra)"
+      "impact_brl": "7.28",
+      "note": "commission charged 2.12 pp above the contracted rate (7.28 extra)"
     },
     {
-      "order_id": "MLB-129265",
+      "order_id": "MLB-120264",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "9.58",
+      "note": "commission charged 1.52 pp above the contracted rate (9.58 extra)"
+    },
+    {
+      "order_id": "MLB-120328",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "1264.67",
+      "note": "paid order has no settlement rows; seller is owed 1264.67"
+    },
+    {
+      "order_id": "MLB-129910",
       "type": "ORPHAN_SETTLEMENT",
-      "impact_brl": "-446.88",
+      "impact_brl": "-395.02",
       "note": "settlement row references an order that does not exist in the seller's book"
     }
   ]

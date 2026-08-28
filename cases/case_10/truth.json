@@ -2,34 +2,46 @@
   "case_id": "case_10",
   "divergences": [
     {
-      "order_id": "MLB-100018",
+      "order_id": "MLB-100045",
+      "type": "CANCELLED_BUT_SETTLED",
+      "impact_brl": "-41.07",
+      "note": "cancelled order was settled as if sold; expect a clawback"
+    },
+    {
+      "order_id": "MLB-100060",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "17.43",
+      "note": "refund debited the gross but did not return the commission (17.43 shorted)"
+    },
+    {
+      "order_id": "MLB-100069",
       "type": "WRONG_SHIPPING_DEDUCTION",
       "impact_brl": "18.00",
       "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
     },
     {
-      "order_id": "MLB-100026",
-      "type": "CANCELLED_BUT_SETTLED",
-      "impact_brl": "-11.10",
-      "note": "cancelled order was settled as if sold; expect a clawback"
+      "order_id": "MLB-100150",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "329.42",
+      "note": "paid order has no settlement rows; seller is owed 329.42"
     },
     {
-      "order_id": "MLB-100034",
-      "type": "REFUND_NOT_SETTLED",
-      "impact_brl": "-1335.20",
-      "note": "order was refunded but no refund row exists; 1335.20 was never debited"
-    },
-    {
-      "order_id": "MLB-100057",
-      "type": "REFUND_AMOUNT_MISMATCH",
-      "impact_brl": "6.33",
-      "note": "refund debited the gross but did not return the commission (6.33 shorted)"
-    },
-    {
-      "order_id": "MLB-100058",
+      "order_id": "MLB-100168",
       "type": "FEE_OVERCHARGE",
-      "impact_brl": "6.92",
-      "note": "commission charged 1.80 pp above the contracted rate (6.92 extra)"
+      "impact_brl": "11.41",
+      "note": "commission charged 2.81 pp above the contracted rate (11.41 extra)"
+    },
+    {
+      "order_id": "MLB-100300",
+      "type": "REFUND_NOT_SETTLED",
+      "impact_brl": "-8.37",
+      "note": "order was refunded but no refund row exists; 8.37 was never debited"
+    },
+    {
+      "order_id": "MLB-109378",
+      "type": "ORPHAN_SETTLEMENT",
+      "impact_brl": "-575.86",
+      "note": "settlement row references an order that does not exist in the seller's book"
     }
   ]
 }

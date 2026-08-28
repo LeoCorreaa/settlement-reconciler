@@ -54,25 +54,50 @@ def run(case_dir: Path, model: str, variant: str = "v2",
              system_prompt=system, kickoff=prompts.KICKOFF)
 
     client = anthropic.Anthropic()
+    # Prompt caching: stable prefix (tools + system) gets its own breakpoints;
+    # a rolling breakpoint on the newest user block re-reads the whole prior
+    # transcript from cache each turn (reads cost 10% of normal input).
+    tool_defs = tools.defs()
+    tool_defs[-1]["cache_control"] = {"type": "ephemeral"}
+    system_blocks = [{"type": "text", "text": system,
+                      "cache_control": {"type": "ephemeral"}}]
     messages: list[dict] = [{"role": "user", "content": prompts.KICKOFF}]
-    usage = {"input_tokens": 0, "output_tokens": 0}
+    usage = {"input_tokens": 0, "output_tokens": 0,
+             "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
     steps = 0
     nudged = False
     verify_retry_used = False
     notes = ""
     findings: list[dict] | None = None
 
+    cached_block: dict | None = None
+
+    def mark_cache() -> None:
+        nonlocal cached_block
+        last = messages[-1]
+        if last["role"] != "user":
+            return
+        if isinstance(last["content"], str):
+            last["content"] = [{"type": "text", "text": last["content"]}]
+        if cached_block is not None:
+            cached_block.pop("cache_control", None)
+        cached_block = last["content"][-1]
+        cached_block["cache_control"] = {"type": "ephemeral"}
+
     while steps < MAX_STEPS and findings is None:
         steps += 1
+        mark_cache()
         response = client.messages.create(
             model=model,
             max_tokens=MAX_TOKENS_PER_TURN,
-            system=system,
-            tools=tools.defs(),
+            system=system_blocks,
+            tools=tool_defs,
             messages=messages,
         )
         usage["input_tokens"] += response.usage.input_tokens
         usage["output_tokens"] += response.usage.output_tokens
+        usage["cache_read_input_tokens"] += getattr(response.usage, "cache_read_input_tokens", 0) or 0
+        usage["cache_creation_input_tokens"] += getattr(response.usage, "cache_creation_input_tokens", 0) or 0
 
         for block in response.content:
             if block.type == "text" and block.text.strip():

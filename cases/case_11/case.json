@@ -1,8 +1,8 @@
 {
   "case_id": "case_11",
   "seed": 1011,
-  "n_orders": 35,
-  "n_settlement_rows": 43,
-  "n_divergences": 2,
+  "n_orders": 350,
+  "n_settlement_rows": 396,
+  "n_divergences": 7,
   "difficulty": "normal"
 }

@@ -2,21 +2,21 @@
   "case_id": "case_04",
   "divergences": [
     {
-      "order_id": "MLB-040019",
+      "order_id": "MLB-040050",
       "type": "WRONG_SHIPPING_DEDUCTION",
       "impact_brl": "21.90",
       "note": "shipping deducted twice (21.90 extra)"
     },
     {
-      "order_id": "MLB-040021",
+      "order_id": "MLB-040060",
       "type": "WRONG_SHIPPING_DEDUCTION",
-      "impact_brl": "21.90",
-      "note": "shipping deducted on an order below the free-shipping threshold (21.90 extra)"
+      "impact_brl": "18.00",
+      "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
     },
     {
-      "order_id": "MLB-049273",
+      "order_id": "MLB-049648",
       "type": "ORPHAN_SETTLEMENT",
-      "impact_brl": "-445.29",
+      "impact_brl": "-186.31",
       "note": "settlement row references an order that does not exist in the seller's book"
     }
   ]

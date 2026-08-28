@@ -41,24 +41,31 @@ LISTING_TYPES = ["classic", "premium"]
 BASE_DATE = date(2026, 7, 1)
 
 # (case_id, n_orders, difficulty, [divergence types to plant])
+#
+# Sizes mirror real monthly volumes: a small store settles tens of orders, a
+# mid-size one settles hundreds. Baseline probing (see changelog) showed a
+# single-prompt approach saturates around ~40 orders and collapses by ~80, so
+# the case set spans 40-400 to expose the scale curve honestly.
 CASE_SPECS: list[tuple[str, int, str, list[str]]] = [
-    ("case_01", 30, "clean", []),
-    ("case_02", 45, "clean", []),
-    ("case_03", 40, "normal", ["MISSING_SETTLEMENT", "FEE_OVERCHARGE", "FEE_OVERCHARGE", "DUPLICATE_SETTLEMENT"]),
-    ("case_04", 45, "normal", ["WRONG_SHIPPING_DEDUCTION", "WRONG_SHIPPING_DEDUCTION", "ORPHAN_SETTLEMENT"]),
-    ("case_05", 50, "normal", ["REFUND_NOT_SETTLED", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "CANCELLED_BUT_SETTLED"]),
-    ("case_06", 40, "normal", ["REFUND_AMOUNT_MISMATCH", "DUPLICATE_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION"]),
-    ("case_07", 55, "normal", ["FEE_OVERCHARGE", "ORPHAN_SETTLEMENT", "REFUND_NOT_SETTLED", "MISSING_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION"]),
-    ("case_08", 45, "normal", ["CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE"]),
-    ("case_09", 50, "normal", ["DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT", "FEE_OVERCHARGE"]),
-    ("case_10", 60, "normal", ["WRONG_SHIPPING_DEDUCTION", "REFUND_NOT_SETTLED", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE"]),
-    ("case_11", 35, "normal", ["MISSING_SETTLEMENT", "DUPLICATE_SETTLEMENT"]),
-    # Hard case: bigger book, subtle overcharge, and a combo order that is
-    # partially refunded AND split-settled AND shorted on the refunded fee.
-    ("case_12", 80, "hard", [
+    ("case_01", 40, "clean", []),
+    ("case_02", 150, "clean", []),
+    ("case_03", 50, "normal", ["MISSING_SETTLEMENT", "FEE_OVERCHARGE", "FEE_OVERCHARGE", "DUPLICATE_SETTLEMENT"]),
+    ("case_04", 60, "normal", ["WRONG_SHIPPING_DEDUCTION", "WRONG_SHIPPING_DEDUCTION", "ORPHAN_SETTLEMENT"]),
+    ("case_05", 80, "normal", ["REFUND_NOT_SETTLED", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH"]),
+    ("case_06", 120, "normal", ["REFUND_AMOUNT_MISMATCH", "DUPLICATE_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE", "MISSING_SETTLEMENT"]),
+    ("case_07", 160, "normal", ["FEE_OVERCHARGE", "ORPHAN_SETTLEMENT", "REFUND_NOT_SETTLED", "MISSING_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION", "CANCELLED_BUT_SETTLED"]),
+    ("case_08", 200, "normal", ["CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE", "DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION"]),
+    ("case_09", 250, "normal", ["DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT", "FEE_OVERCHARGE", "REFUND_NOT_SETTLED", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE"]),
+    ("case_10", 300, "normal", ["WRONG_SHIPPING_DEDUCTION", "REFUND_NOT_SETTLED", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT"]),
+    ("case_11", 350, "normal", ["MISSING_SETTLEMENT", "DUPLICATE_SETTLEMENT", "FEE_OVERCHARGE", "REFUND_AMOUNT_MISMATCH", "WRONG_SHIPPING_DEDUCTION", "CANCELLED_BUT_SETTLED", "REFUND_NOT_SETTLED"]),
+    # Hard case: real mid-size monthly volume, subtle overcharges, and a combo
+    # order that is partially refunded AND split-settled AND shorted on the
+    # refunded commission.
+    ("case_12", 400, "hard", [
         "MISSING_SETTLEMENT", "DUPLICATE_SETTLEMENT", "ORPHAN_SETTLEMENT",
         "FEE_OVERCHARGE", "FEE_OVERCHARGE", "WRONG_SHIPPING_DEDUCTION",
-        "REFUND_NOT_SETTLED", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH",
+        "WRONG_SHIPPING_DEDUCTION", "REFUND_NOT_SETTLED",
+        "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH",
     ]),
 ]
 

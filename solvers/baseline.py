@@ -59,11 +59,14 @@ def solve(case_dir: Path, model: str) -> dict:
     )
 
     client = anthropic.Anthropic()
-    response = client.messages.create(
+    # Generous output ceiling (streamed): the baseline must never lose because
+    # we starved it of thinking room.
+    with client.messages.stream(
         model=model,
-        max_tokens=16000,
+        max_tokens=32000,
         messages=[{"role": "user", "content": prompt}],
-    )
+    ) as stream:
+        response = stream.get_final_message()
     text = "".join(block.text for block in response.content if block.type == "text")
 
     try:

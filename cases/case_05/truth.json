@@ -2,28 +2,34 @@
   "case_id": "case_05",
   "divergences": [
     {
-      "order_id": "MLB-050016",
-      "type": "MISSING_SETTLEMENT",
-      "impact_brl": "34.67",
-      "note": "paid order has no settlement rows; seller is owed 34.67"
+      "order_id": "MLB-050002",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "8.70",
+      "note": "commission charged 2.00 pp above the contracted rate (8.70 extra)"
     },
     {
-      "order_id": "MLB-050031",
+      "order_id": "MLB-050013",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "11.24",
+      "note": "refund debited the gross but did not return the commission (11.24 shorted)"
+    },
+    {
+      "order_id": "MLB-050016",
       "type": "CANCELLED_BUT_SETTLED",
-      "impact_brl": "-19.74",
+      "impact_brl": "-286.85",
       "note": "cancelled order was settled as if sold; expect a clawback"
     },
     {
-      "order_id": "MLB-050034",
-      "type": "FEE_OVERCHARGE",
-      "impact_brl": "3.09",
-      "note": "commission charged 2.29 pp above the contracted rate (3.09 extra)"
+      "order_id": "MLB-050058",
+      "type": "REFUND_NOT_SETTLED",
+      "impact_brl": "-1066.08",
+      "note": "order was refunded but no refund row exists; 1066.08 was never debited"
     },
     {
-      "order_id": "MLB-050050",
-      "type": "REFUND_NOT_SETTLED",
-      "impact_brl": "-46.62",
-      "note": "order was refunded but no refund row exists; 46.62 was never debited"
+      "order_id": "MLB-050080",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "714.87",
+      "note": "paid order has no settlement rows; seller is owed 714.87"
     }
   ]
 }
