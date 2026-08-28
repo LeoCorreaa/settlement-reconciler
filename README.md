@@ -99,6 +99,11 @@ model cannot decompose to an explicit "needs manual review" section instead of
 a confident error. Archived pre-fix evidence: `results/archive/`,
 `trajectories/archive/`.
 
+Reproducibility note: every row above reproduces at HEAD except the
+superseded revisions - v3.0 reproduces at commit `b71bf61`, and the
+pre-hardening probe numbers quoted in the changelog reproduce at `f7dae3a`
+(scaled dataset) and `4aa4bef` (first dataset).
+
 ## Improvement Changelog
 
 One entry per meaningful iteration, with the evidence that drove the next
@@ -139,6 +144,34 @@ the plain single prompt. What actually solved the problem was the labor
 split - arithmetic in deterministic tools, attribution in the model, and a
 verifier that refuses to let either fail silently. For a finance workflow, a
 flagged unknown beats a confident error every time.
+
+## Limitations and threats to validity
+
+Stated up front because a careful reviewer will find them anyway:
+
+1. **The dataset is synthetic and shares its rules engine with the agent's
+   tools.** `engine.py` both generates the correct settlements (before
+   corruption) and powers `scan_mismatches` / `calc_expected` / the verifier.
+   That means candidate *detection* is deterministic by construction; what the
+   evaluation actually measures is root-cause attribution, quantification and
+   restraint (not inventing divergences on clean books or split payouts) at
+   volumes where single-shot reasoning collapses. The baseline receives the
+   exact same rules document, so the comparison isolates engineering, not
+   knowledge. A generalization case where the tools' knowledge is
+   deliberately incomplete (a fee promotion announced only in prose) is
+   planned to measure judgment beyond the engine - see the changelog.
+2. **One run per configuration so far.** LLM outputs are stochastic; a
+   variance run (3x the final system) is planned before submission. Treat
+   third-decimal differences as noise.
+3. **Precision is 1.000 everywhere, including the baseline.** Partly genuine
+   restraint (clean cases and split-payout traps caught nobody), partly a
+   side effect: solvers that collapse produce empty output, which cannot
+   contain false positives. Recall is where the signal lives.
+4. **Planted divergences come from a known taxonomy.** There are no unknown
+   unknowns in the ground truth; real statements have them. The
+   needs-manual-review routing is the system's honest answer for that class.
+5. **Reproducing the tables requires the judge's own Anthropic API key**
+   (~$7-8 for everything, ~$4.60 for the headline comparison).
 
 ## Repository layout
 
