@@ -18,6 +18,7 @@ import sys
 from collections import Counter
 
 import config
+from engine import money, to_cents
 from solvers import common
 from solvers.agent.tools import CaseTools
 from solvers.agent.verify import check_completeness, verify_findings
@@ -84,6 +85,18 @@ def main() -> None:
                 partial.append(f)
             if not any(i["order_id"] == target for i in check_completeness(partial, case)):
                 fail(f"completeness misses a dropped divergence on compound order {target}")
+
+        # 3e. inflating one finding's impact to absorb a compound order's whole
+        # delta (the reward hack) must be rejected by impact validation
+        for target in multi:
+            entries = [t for t in truths if t["order_id"] == target]
+            total = sum(to_cents(t["impact_brl"]) for t in entries)
+            inflated = {"order_id": target, "type": entries[0]["type"],
+                        "explanation": "inflated to cover the whole delta",
+                        "impact_brl": money(total)}
+            accepted, _ = verify_findings([inflated], case)
+            if accepted:
+                fail(f"verifier accepted INFLATED impact on compound order {target}")
 
     print()
     if failures:

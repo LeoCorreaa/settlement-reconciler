@@ -3,12 +3,15 @@
 Two independent checks, both against the rules engine and the observed rows -
 never against truth.json:
 
-1. Presence: a finding the data cannot support is rejected with a concrete
-   reason (kills false positives).
+1. Presence + impact: a finding must be supported by the data AND its reported
+   impact must equal the rule-derived impact for that divergence type (fee
+   deltas come from the fee column, shipping deltas from the shipping column,
+   and so on). Validating the amount closes the reward hack where the model
+   inflates one finding's impact to make the residual check pass instead of
+   locating a coexisting divergence.
 2. Completeness: per order, the observed net delta must be fully explained by
-   the sum of the reported impacts; an unexplained residual above tolerance
-   means a divergence is missing or an impact amount is wrong (kills false
-   negatives - e.g. reporting only one cause of a compound divergence).
+   the sum of reported impacts; an unexplained residual above tolerance means
+   a divergence is missing or an impact amount is wrong.
 
 Failures are fed back to the agent for one revision round.
 """
@@ -93,12 +96,23 @@ def _check(finding: dict, case: dict, rows_by_order: dict, tolerance: int) -> st
     payments = [r for r in rows if r["type"] == "payment"]
     refunds = [r for r in rows if r["type"] == "refund"]
 
+    def impact_matches(canonical: int) -> str | None:
+        try:
+            reported = to_cents(finding.get("impact_brl", "0"))
+        except (ValueError, TypeError):
+            return f"impact_brl '{finding.get('impact_brl')}' is not a parseable amount"
+        if abs(reported - canonical) > tolerance:
+            return (f"impact_brl {finding.get('impact_brl')} does not match the rule-derived "
+                    f"impact {money(canonical)} for {kind} on {order_id} - if this order's "
+                    f"total delta is larger, another divergence coexists on the same order")
+        return None
+
     if kind == "ORPHAN_SETTLEMENT":
         if order is not None:
             return f"{order_id} exists in the seller's book, so its rows are not orphans"
         if not rows:
             return f"no settlement rows reference {order_id}"
-        return None
+        return impact_matches(-sum(r["net_cents"] for r in rows))
 
     if order is None:
         return f"order {order_id} does not exist in the seller's book (did you mean ORPHAN_SETTLEMENT?)"
@@ -113,7 +127,7 @@ def _check(finding: dict, case: dict, rows_by_order: dict, tolerance: int) -> st
         if rows:
             return (f"{order_id} has {len(rows)} settlement row(s) netting "
                     f"{money(sum(r['net_cents'] for r in rows))}, so nothing is missing")
-        return None
+        return impact_matches(sum(l["net_cents"] for l in expected))
 
     if kind == "DUPLICATE_SETTLEMENT":
         if exp_payment is None:
@@ -122,32 +136,35 @@ def _check(finding: dict, case: dict, rows_by_order: dict, tolerance: int) -> st
         if observed_gross <= exp_payment["gross_cents"] + tolerance:
             return (f"payment gross observed {money(observed_gross)} does not exceed "
                     f"expected {money(exp_payment['gross_cents'])}; no duplication")
-        return None
+        excess_net = sum(r["net_cents"] for r in payments) - exp_payment["net_cents"]
+        return impact_matches(-excess_net)
 
     if kind == "FEE_OVERCHARGE":
         if exp_payment is None:
             return f"{order_id} should have no payment row to overcharge"
         observed_fee = sum(r["fee_cents"] for r in payments)
-        if observed_fee >= exp_payment["fee_cents"] - tolerance:
+        delta = exp_payment["fee_cents"] - observed_fee
+        if delta <= tolerance:
             return (f"observed commission {money(observed_fee)} matches the contracted "
                     f"{money(exp_payment['fee_cents'])}; no overcharge on payment rows")
-        return None
+        return impact_matches(delta)
 
     if kind == "WRONG_SHIPPING_DEDUCTION":
         if exp_payment is None:
             return f"{order_id} should have no payment row"
         observed_ship = sum(r["shipping_cents"] for r in payments)
-        if abs(observed_ship - exp_payment["shipping_cents"]) <= tolerance:
+        delta = exp_payment["shipping_cents"] - observed_ship
+        if abs(delta) <= tolerance:
             return (f"observed shipping {money(observed_ship)} matches expected "
                     f"{money(exp_payment['shipping_cents'])}")
-        return None
+        return impact_matches(delta)
 
     if kind == "REFUND_NOT_SETTLED":
         if order["status"] not in ("refunded", "partially_refunded"):
             return f"{order_id} has status {order['status']}; no refund is expected"
         if refunds:
             return f"{order_id} has a refund row netting {money(sum(r['net_cents'] for r in refunds))}"
-        return None
+        return impact_matches(exp_refund["net_cents"])
 
     if kind == "REFUND_AMOUNT_MISMATCH":
         if exp_refund is None:
@@ -155,16 +172,17 @@ def _check(finding: dict, case: dict, rows_by_order: dict, tolerance: int) -> st
         if not refunds:
             return f"{order_id} has no refund row at all (that is REFUND_NOT_SETTLED)"
         observed_net = sum(r["net_cents"] for r in refunds)
-        if abs(observed_net - exp_refund["net_cents"]) <= tolerance:
+        delta = exp_refund["net_cents"] - observed_net
+        if abs(delta) <= tolerance:
             return (f"refund net observed {money(observed_net)} matches expected "
                     f"{money(exp_refund['net_cents'])}")
-        return None
+        return impact_matches(delta)
 
     if kind == "CANCELLED_BUT_SETTLED":
         if order["status"] != "cancelled":
             return f"{order_id} has status {order['status']}, not cancelled"
         if not rows:
             return f"{order_id} has no settlement rows; nothing was settled"
-        return None
+        return impact_matches(-sum(r["net_cents"] for r in rows))
 
     return f"unknown divergence type {kind}"
