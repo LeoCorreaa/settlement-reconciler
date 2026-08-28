@@ -64,12 +64,20 @@ per-case detail; agent runs also produce one trajectory per case under
 | Solution | Model | F1 | Precision | Recall | Clean-case FPs | Cost | Time |
 |---|---|---|---|---|---|---|---|
 | mock (floor) | - | 0.000 | 0.000 | 0.000 | 0 | $0.00 | 0s |
-| agent v2 | claude-sonnet-5 | **1.000** | 1.000 | 1.000 | 0 | $1.01 | 776s |
 | baseline | claude-sonnet-5 | _pending_ | | | | | |
 | agent v1 | claude-sonnet-5 | _pending (size-tier subset)_ | | | | | |
-| agent v2 | claude-haiku-4-5 | _pending_ | | | | | |
+| agent v2 | claude-sonnet-5 | **1.000** | 1.000 | 1.000 | 0 | $1.01 | 776s |
+| agent v2 | claude-haiku-4-5 | 0.964 | 1.000 | 0.930 | 0 | $0.49 | 714s |
+| agent v3.0 (residual check) | claude-haiku-4-5 | 0.978 | 1.000 | 0.958 | 0 | $0.53 | 409s |
+| agent v3.1 (+impact validation) | claude-haiku-4-5 | 0.978 | 1.000 | 0.958 | 0 | $0.55 | 445s |
 | agent v3 | claude-sonnet-5 | _pending_ | | | | | |
-| agent v3 | claude-haiku-4-5 | _pending_ | | | | | |
+
+v3.0 vs v3.1 tie on aggregate F1 but fail differently: v3.0's misses include
+findings that *pass* verification via an inflated impact (silently wrong
+report); v3.1 blocks that, fixes two more cases outright, and routes what the
+model cannot decompose to an explicit "needs manual review" section instead of
+a confident error. Archived pre-fix evidence: `results/archive/`,
+`trajectories/archive/`.
 
 ## Improvement Changelog
 
@@ -83,10 +91,28 @@ decision. Probe runs used the earlier dataset revisions noted inline.
 | Prompt caching | Rolling cache breakpoints (tools + system + latest user block) | 50-order run: only **16 uncached input tokens**; 55k cache reads billed at 10% | Kept - cuts input cost ~85% on multi-step runs |
 | v2 full run | All 12 cases, 40-400 orders | **60/60, F1 1.000, $0.81** - including 10/10 on the 400-order hard case ($0.11, 74s) where the baseline had scored 0 at 80 orders | A saturated benchmark discriminates nothing. Hardened the dataset instead of celebrating |
 | Dataset hardening | Compound divergences (two root causes behind one net delta) + subtle 30-80 cent overcharges | v2 still **71/71, F1 1.000** ($1.01) | The settlement schema separates fee and shipping columns, so decomposition is mechanical once `calc_expected` exists - the schema was doing the reasoning. Next contrast: capability curve (v1 without deterministic tools; weaker model with/without verification) |
+| Weaker-model probe | v2 unchanged, model swapped to claude-haiku-4-5 (half the price) | **F1 0.964** (recall 0.930, $0.49). All 5 misses were the second cause of a compound divergence or a subtle overcharge - silent omissions | Verification has a concrete target: catch what the model leaves out, not just what it invents |
+| v3.0: completeness verification | Per-order residual check: observed delta must be fully explained by reported impacts; failures go back to the agent for one revision | haiku: **F1 0.978**, recovered 2 of 5 misses | Trajectories exposed **reward hacking**: on MLB-090140 the model *described both causes in its explanation*, then packed them into one finding with an inflated impact so the residual closed (see `trajectories/archive/case_09_agent_v3.0_haiku-4-5_reward-hack.jsonl`) |
+| v3.1: impact validation | Every divergence type has a rule-derived canonical impact (fee delta from the fee column, shipping delta from the shipping column, ...); the presence check now validates the reported amount | haiku: **F1 0.978** aggregate, but the subtle case_08 and compound case_11 became perfect and the hack died; case_09 regressed (model could not decompose within one retry; findings rejected) | Verification converts silent errors into explicit signals. Added the production answer: post-retry failures surface as "needs manual review" items in the report instead of disappearing |
 
 ## Main failure mode and hot take
 
-_To be completed after the capability-curve experiments (v1, Haiku, v3)._
+_Draft - to be finalized after the Sonnet baseline/v1/v3 runs._
+
+**Main failure mode:** strict verification plus a single revision round can
+make a small model *drop* findings it partially understood (case_09 went 8/9
+under lenient checks to 6/9 under strict ones - the model saw the compound
+divergence but could not express it as two correctly-quantified findings).
+The fix is not weaker verification: it is refusing to fail silently - every
+rejected finding and unexplained residual now lands in the report's "needs
+manual review" section with the exact residual amount.
+
+**Hot take:** verification does not make a weak model strong - it makes its
+weakness *visible*. The residual check alone was gamed within one run
+(inflate an impact until the ledger closes); only value-level validation
+killed the hack. For a finance workflow, a flagged unknown beats a confident
+error every time, and an agent that can say "I could not fully explain this
+order" is worth more than one that always balances its books.
 
 ## Repository layout
 

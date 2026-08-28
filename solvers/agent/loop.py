@@ -70,6 +70,9 @@ def run(case_dir: Path, model: str, variant: str = "v2",
     verify_retry_used = False
     notes = ""
     findings: list[dict] | None = None
+    # Verification failures that survive the revision round are NOT silently
+    # dropped: they surface as needs-manual-review items in the final report.
+    unresolved: list[dict] = []
 
     cached_block: dict | None = None
 
@@ -169,8 +172,15 @@ def run(case_dir: Path, model: str, variant: str = "v2",
                     results.append(_tool_result(block.id, feedback))
                     continue
                 if rejected or completeness:
-                    notes = (f"after retry: {len(rejected)} rejected finding(s) dropped, "
-                             f"{len(completeness)} residual(s) left unexplained")
+                    notes = (f"after retry: {len(rejected)} rejected finding(s) and "
+                             f"{len(completeness)} unexplained residual(s) routed to manual review")
+                    unresolved = (
+                        [{"order_id": r["order_id"],
+                          "reason": f"reported as {r['type']} but failed verification: {r['reason']}"}
+                         for r in rejected]
+                        + [{"order_id": c["order_id"], "reason": c["reason"]}
+                           for c in completeness]
+                    )
                 findings = ok
             else:
                 findings = submitted
@@ -186,10 +196,12 @@ def run(case_dir: Path, model: str, variant: str = "v2",
         traj.log("gave_up", reason=notes)
         findings = []
 
-    traj.log("final", findings=findings, usage=usage, steps=steps, notes=notes)
+    traj.log("final", findings=findings, unresolved=unresolved, usage=usage,
+             steps=steps, notes=notes)
     traj.close()
     return {
         "findings": findings,
+        "unresolved": unresolved,
         "usage": usage,
         "steps": steps,
         "notes": notes,

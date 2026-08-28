@@ -80,6 +80,19 @@ def render_case(entry: dict, model: str) -> str:
     else:
         lines += ["No divergences found - the settlement matches the contract.", ""]
 
+    unresolved = entry.get("unresolved", [])
+    if unresolved:
+        lines += [
+            "## Needs manual review",
+            "",
+            "The automated verifier could not fully reconcile the items below - "
+            "they are flagged instead of silently dropped:",
+            "",
+        ]
+        for item in unresolved:
+            lines.append(f"- **{item['order_id']}**: {item['reason']}")
+        lines.append("")
+
     lines += [
         "## Recommended next step",
         "",
