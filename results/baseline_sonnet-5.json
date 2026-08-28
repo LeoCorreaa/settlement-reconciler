@@ -1,27 +1,457 @@
 {
-  "label": "baseline",
+  "label": "baseline_sonnet-5",
   "solver": "baseline",
   "variant": null,
   "model": "claude-sonnet-5",
-  "timestamp": "2026-08-28T16:57:29+00:00",
+  "timestamp": "2026-08-28T19:47:45+00:00",
   "aggregate": {
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "tp": 0,
+    "precision": 1.0,
+    "recall": 0.2676,
+    "f1": 0.4222,
+    "tp": 19,
     "fp": 0,
-    "fn": 9,
+    "fn": 52,
     "clean_case_fps": 0,
-    "input_tokens": 9047,
-    "output_tokens": 16000,
-    "cost_usd": 0.1781,
-    "seconds": 116.5,
+    "input_tokens": 219700,
+    "output_tokens": 331204,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "cost_usd": 3.7514,
+    "seconds": 2408.1,
     "errors": 0
   },
   "per_case": [
     {
-      "case": "case_12",
-      "difficulty": "hard",
+      "case": "case_01",
+      "difficulty": "clean",
+      "n_truth": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 5320,
+        "output_tokens": 14891
+      },
+      "seconds": 122.6,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_02",
+      "difficulty": "clean",
+      "n_truth": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 15707,
+        "output_tokens": 32000
+      },
+      "seconds": 214.2,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_03",
+      "difficulty": "normal",
+      "n_truth": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-030005",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030018",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030022",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-030048",
+          "MISSING_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-030005",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Home/premium commission should be 17% of 2006.08 = 341.03 (unit_price >=79, no low-ticket fee). Settlement ST-0300006 charged -400.21, overcharging the seller by 59.18. Shipping (-39.90, heavy) is correct.",
+          "impact_brl": "59.18"
+        },
+        {
+          "order_id": "MLB-030018",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Toys/premium commission should be 17% of 5114.31 = 869.43 (unit_price >=79, no low-ticket fee). Settlement ST-0300021 charged -969.16, overcharging the seller by 99.73. Shipping (-21.90, standard) is correct.",
+          "impact_brl": "99.73"
+        },
+        {
+          "order_id": "MLB-030022",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order gross is only 64.74, but it was settled twice in full with identical fees: ST-0300026 (2026-07-18) and ST-0300057 (2026-07-19), both gross 64.74, fee -16.61, net 48.13. This is not a legitimate split (both rows carry full gross and full fees, doubling the payout) - it is a duplicate settlement.",
+          "impact_brl": "-48.13"
+        },
+        {
+          "order_id": "MLB-030048",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Delivered order (fashion/classic, gross 42.15, unit_price<79 so low-ticket fee applies, commission = 5.48+6.25=11.73, no shipping since gross<79, expected net 30.42) has no corresponding settlement row at all.",
+          "impact_brl": "30.42"
+        }
+      ],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 6197,
+        "output_tokens": 15525
+      },
+      "seconds": 120.5,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_04",
+      "difficulty": "normal",
+      "n_truth": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-040050",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-040060",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-049648",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-040050",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order is heavy weight_class with gross_amount >= 79.00, so the flat seller-paid shipping fee should be 39.90. The settlement (ST-0400057) deducted 61.80 instead, overcharging the seller by 21.90.",
+          "impact_brl": "21.9"
+        },
+        {
+          "order_id": "MLB-040060",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order is standard weight_class with gross_amount >= 79.00, so the flat seller-paid shipping fee should be 21.90. The settlement (ST-0400067) deducted 39.90 instead, overcharging the seller by 18.00.",
+          "impact_brl": "18.0"
+        },
+        {
+          "order_id": "MLB-049648",
+          "type": "ORPHAN_SETTLEMENT",
+          "explanation": "Settlement row ST-0400068 references order MLB-049648, which does not exist anywhere in the orders.csv order book. This is an unmatched/orphan settlement paying out net 186.31 with no corresponding order.",
+          "impact_brl": "-186.31"
+        }
+      ],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 7174,
+        "output_tokens": 20103
+      },
+      "seconds": 160.2,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_05",
+      "difficulty": "normal",
+      "n_truth": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-050002",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-050013",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-050016",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-050058",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-050080",
+          "MISSING_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-050002",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Toys premium commission should be 17% of 434.84 = 73.92 (unit_price>=79, no low-ticket fee). Settlement charged -82.62 instead of -73.92, resulting in net 330.32 instead of expected 339.02.",
+          "impact_brl": "8.70"
+        },
+        {
+          "order_id": "MLB-050013",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Full refund of a 38.40 order should return commission of 11.24 (marketplace_fee=+11.24, net=-27.16). The refund row (ST-0500015) shows marketplace_fee=0.00 and net=-38.40, meaning the seller never got the commission refunded.",
+          "impact_brl": "11.24"
+        },
+        {
+          "order_id": "MLB-050016",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order status is cancelled, which per rules must have NO settlement rows. However settlement ST-0500098 shows a full payment (gross 363.23, fee -54.48, shipping -21.90, net 286.85) for this order.",
+          "impact_brl": "-286.85"
+        },
+        {
+          "order_id": "MLB-050058",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order status is refunded (full refund of 1211.46) but only the original payment row (ST-0500069) exists; no refund row was found. Expected refund row: gross=-1211.46, marketplace_fee=+145.38, net=-1066.08.",
+          "impact_brl": "-1066.08"
+        },
+        {
+          "order_id": "MLB-050080",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order is delivered (home, premium, heavy, gross 909.36) but no settlement row exists at all. Expected payment: fee=-154.59, shipping=-39.90, net=714.87.",
+          "impact_brl": "714.87"
+        }
+      ],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 9155,
+        "output_tokens": 26746
+      },
+      "seconds": 195.8,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_06",
+      "difficulty": "normal",
+      "n_truth": 7,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-060034",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-060038",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-060070",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-060070",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-060087",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-060091",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-060094",
+          "WRONG_SHIPPING_DEDUCTION"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-060034",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Partial refund (60% of gross) should return marketplace_fee = round_half_up(308.87*0.6)=185.32, but the refund row (ST-0600039) shows marketplace_fee=0.00, so the seller was not credited the proportional commission.",
+          "impact_brl": "185.32"
+        },
+        {
+          "order_id": "MLB-060038",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Expected commission = 16%*108.54=17.37 + low-ticket fee 6.25*3=18.75 = 36.12, but settlement charged 38.05 (net 48.59 instead of expected 50.52).",
+          "impact_brl": "1.93"
+        },
+        {
+          "order_id": "MLB-060070",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Expected commission = 11%*131.36=14.45 + low-ticket fee 6.25*2=12.50 = 26.95, but settlement charged 29.41.",
+          "impact_brl": "2.46"
+        },
+        {
+          "order_id": "MLB-060070",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' (shipping should be 21.90) but settlement deducted 39.90 (heavy rate).",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-060087",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order MLB-060087 (paid, fashion premium, gross 236.59) has no corresponding settlement row at all; expected net payout of 172.10 was never settled.",
+          "impact_brl": "172.10"
+        },
+        {
+          "order_id": "MLB-060091",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order MLB-060091 was settled twice with identical payment rows (ST-0600112 on 2026-07-31 and ST-0600145 on 2026-08-01), both for the same gross/fee/net amounts, resulting in double payment to the seller.",
+          "impact_brl": "-47.96"
+        },
+        {
+          "order_id": "MLB-060094",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' (shipping should be 21.90) but settlement (ST-0600114) deducted 39.90 (heavy rate).",
+          "impact_brl": "18.00"
+        }
+      ],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 13018,
+        "output_tokens": 29939
+      },
+      "seconds": 216.3,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_07",
+      "difficulty": "normal",
+      "n_truth": 6,
+      "tp": 0,
+      "fp": 0,
+      "fn": 6,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-070003",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-070006",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-070061",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-070067",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-070119",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-079870",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 16786,
+        "output_tokens": 32000
+      },
+      "seconds": 228.6,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_08",
+      "difficulty": "normal",
+      "n_truth": 7,
+      "tp": 0,
+      "fp": 0,
+      "fn": 7,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-080018",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-080068",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-080078",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-080086",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-080113",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-080173",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-080191",
+          "DUPLICATE_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 20171,
+        "output_tokens": 32000
+      },
+      "seconds": 218.6,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_09",
+      "difficulty": "normal",
       "n_truth": 9,
       "tp": 0,
       "fp": 0,
@@ -30,49 +460,239 @@
       "fp_keys": [],
       "fn_keys": [
         [
-          "MLB-120009",
+          "MLB-090030",
           "REFUND_NOT_SETTLED"
         ],
         [
-          "MLB-120010",
+          "MLB-090036",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090087",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090090",
           "DUPLICATE_SETTLEMENT"
         ],
         [
-          "MLB-120023",
+          "MLB-090140",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090140",
           "REFUND_AMOUNT_MISMATCH"
         ],
         [
-          "MLB-120024",
-          "FEE_OVERCHARGE"
-        ],
-        [
-          "MLB-120042",
-          "WRONG_SHIPPING_DEDUCTION"
-        ],
-        [
-          "MLB-120062",
-          "CANCELLED_BUT_SETTLED"
-        ],
-        [
-          "MLB-120069",
+          "MLB-090238",
           "MISSING_SETTLEMENT"
         ],
         [
-          "MLB-120077",
-          "FEE_OVERCHARGE"
+          "MLB-090243",
+          "WRONG_SHIPPING_DEDUCTION"
         ],
         [
-          "MLB-129265",
+          "MLB-099824",
           "ORPHAN_SETTLEMENT"
         ]
       ],
       "findings": [],
+      "unresolved": [],
       "steps": 1,
       "usage": {
-        "input_tokens": 9047,
-        "output_tokens": 16000
+        "input_tokens": 25096,
+        "output_tokens": 32000
       },
-      "seconds": 116.5,
+      "seconds": 244.3,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_10",
+      "difficulty": "normal",
+      "n_truth": 8,
+      "tp": 0,
+      "fp": 0,
+      "fn": 8,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-100045",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-100060",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-100069",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-100150",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-100168",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-100187",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-100300",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-109378",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 29002,
+        "output_tokens": 32000
+      },
+      "seconds": 238.2,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_11",
+      "difficulty": "normal",
+      "n_truth": 9,
+      "tp": 0,
+      "fp": 0,
+      "fn": 9,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-110089",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-110100",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-110151",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-110151",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-110166",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-110265",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-110271",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-110328",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-110334",
+          "REFUND_NOT_SETTLED"
+        ]
+      ],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 33696,
+        "output_tokens": 32000
+      },
+      "seconds": 213.3,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_12",
+      "difficulty": "hard",
+      "n_truth": 13,
+      "tp": 0,
+      "fp": 0,
+      "fn": 13,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-120018",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120048",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-120052",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-120103",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-120115",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-120125",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120125",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-120185",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-120224",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-120236",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120264",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120328",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-129910",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 38378,
+        "output_tokens": 32000
+      },
+      "seconds": 235.5,
       "notes": "",
       "error": "",
       "trajectory": ""

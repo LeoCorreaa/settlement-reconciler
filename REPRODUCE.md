@@ -63,11 +63,27 @@ Model selection: defaults to `claude-sonnet-5`; override with the
 ## 6. What to expect
 
 - `results/<label>.json` holds precision/recall/F1, token usage, cost and the
-  full findings per case.
-- Approximate cost per full 12-case run (claude-sonnet-5): baseline < $1,
-  agent variants $1-4 each. _Exact numbers to be updated from our runs._
+  full findings per case; agent runs write one JSONL trajectory per case
+  under `trajectories/` (render them with `python -m scripts.render_trajectory`).
+- Measured costs and wall-clock from our runs (your numbers should be close):
+
+| Run | Model | Cost | Time |
+|---|---|---|---|
+| baseline, 12 cases | claude-sonnet-5 | $3.75 | ~40 min |
+| agent v1, 3 cases (50/120/250) | claude-sonnet-5 | $0.78 | ~6 min |
+| agent v2, 12 cases | claude-sonnet-5 | $1.01 | ~13 min |
+| agent v3, 12 cases | claude-sonnet-5 | $0.85 | ~12 min |
+| agent v2, 12 cases | claude-haiku-4-5 | $0.49 | ~12 min |
+| agent v3, 12 cases | claude-haiku-4-5 | $0.55 | ~7 min |
+
+  Reproducing every table in the README costs about $7-8 of API usage; the
+  headline comparison alone (baseline + agent v3 on claude-sonnet-5) is ~$4.60.
 - LLM outputs are not bit-deterministic; scores may vary by a few points
-  between runs. The dataset, tools and scoring are fully deterministic.
+  between runs (our agent v3 sonnet run had zero errors and F1 1.000; treat
+  small deviations as normal). The dataset, tools, verification and scoring
+  are fully deterministic.
+- The per-case seller report is rendered with
+  `python -m scripts.render_report --run results/agent_v3_sonnet-5.json --case case_12`.
 
 ## 7. Versions
 
