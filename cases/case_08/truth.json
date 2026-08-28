@@ -1,0 +1,23 @@
+{
+  "case_id": "case_08",
+  "divergences": [
+    {
+      "order_id": "MLB-080007",
+      "type": "CANCELLED_BUT_SETTLED",
+      "impact_brl": "-1788.94",
+      "note": "cancelled order was settled as if sold; expect a clawback"
+    },
+    {
+      "order_id": "MLB-080013",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "12.37",
+      "note": "refund debited the gross but did not return the commission (12.37 shorted)"
+    },
+    {
+      "order_id": "MLB-080043",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "8.34",
+      "note": "commission charged 2.32 pp above the contracted rate (8.34 extra)"
+    }
+  ]
+}

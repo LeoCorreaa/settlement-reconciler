@@ -1,0 +1,78 @@
+"""Offline sanity checks for the dataset, scan and verifier (no API calls).
+
+1. Coverage: scan_mismatches must surface every planted divergence's order_id
+   (if the deterministic sweep can't see it, no solver can).
+2. Cleanliness: clean cases and untouched orders must produce ZERO candidates
+   (split settlements and rounding must not look like divergences).
+3. Verifier soundness: the ground truth, submitted as findings, must be 100%
+   accepted; deliberately wrong findings must be rejected.
+
+Usage:
+    python -m scripts.sanity_check
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+
+import config
+from solvers import common
+from solvers.agent.tools import CaseTools
+from solvers.agent.verify import verify_findings
+
+failures = 0
+
+
+def fail(message: str) -> None:
+    global failures
+    failures += 1
+    print(f"  FAIL {message}")
+
+
+def main() -> None:
+    case_dirs = sorted(d for d in config.CASES_DIR.iterdir() if d.is_dir())
+    for case_dir in case_dirs:
+        truths = json.loads((case_dir / "truth.json").read_text(encoding="utf-8"))["divergences"]
+        case = common.load_case(case_dir)
+        tools = CaseTools(case, "v2")
+        scan = json.loads(tools.execute("scan_mismatches", {}))
+        candidate_ids = {c["order_id"] for c in scan["candidates"]}
+        truth_ids = {t["order_id"] for t in truths}
+
+        print(f"{case_dir.name}: {len(truths)} truths, {len(candidate_ids)} scan candidates")
+
+        # 1. every planted divergence must be visible to the scan
+        for missing in sorted(truth_ids - candidate_ids):
+            fail(f"planted divergence on {missing} is invisible to scan_mismatches")
+
+        # 2. no false candidates: every candidate must belong to a truth
+        for extra in sorted(candidate_ids - truth_ids):
+            fail(f"scan flags {extra} but no divergence was planted there")
+
+        # 3a. ground truth submitted as findings must be fully accepted
+        as_findings = [{"order_id": t["order_id"], "type": t["type"],
+                        "explanation": t["note"], "impact_brl": t["impact_brl"]}
+                       for t in truths]
+        accepted, rejected = verify_findings(as_findings, case)
+        for r in rejected:
+            fail(f"verifier rejected TRUE finding {r['order_id']} {r['type']}: {r['reason']}")
+
+        # 3b. wrong findings must be rejected
+        clean_orders = [o for o in case["orders"] if o["order_id"] not in truth_ids
+                        and o["status"] in ("paid", "delivered")]
+        bogus = [{"order_id": o["order_id"], "type": "FEE_OVERCHARGE",
+                  "explanation": "bogus", "impact_brl": "1.00"} for o in clean_orders[:3]]
+        accepted, rejected = verify_findings(bogus, case)
+        for a in accepted:
+            fail(f"verifier accepted BOGUS finding {a['order_id']} FEE_OVERCHARGE")
+
+    print()
+    if failures:
+        print(f"{failures} sanity failure(s)")
+        sys.exit(1)
+    print("all sanity checks passed")
+
+
+if __name__ == "__main__":
+    main()

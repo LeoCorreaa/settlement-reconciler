@@ -1,0 +1,35 @@
+{
+  "case_id": "case_07",
+  "divergences": [
+    {
+      "order_id": "MLB-070026",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "113.19",
+      "note": "paid order has no settlement rows; seller is owed 113.19"
+    },
+    {
+      "order_id": "MLB-070029",
+      "type": "WRONG_SHIPPING_DEDUCTION",
+      "impact_brl": "18.00",
+      "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
+    },
+    {
+      "order_id": "MLB-070041",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "6.63",
+      "note": "commission charged 1.84 pp above the contracted rate (6.63 extra)"
+    },
+    {
+      "order_id": "MLB-070051",
+      "type": "REFUND_NOT_SETTLED",
+      "impact_brl": "-1272.47",
+      "note": "order was refunded but no refund row exists; 1272.47 was never debited"
+    },
+    {
+      "order_id": "MLB-079886",
+      "type": "ORPHAN_SETTLEMENT",
+      "impact_brl": "-744.01",
+      "note": "settlement row references an order that does not exist in the seller's book"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "currency": "BRL",
+  "commission_rates": {
+    "electronics": {"classic": 0.11, "premium": 0.16},
+    "fashion": {"classic": 0.13, "premium": 0.18},
+    "home": {"classic": 0.12, "premium": 0.17},
+    "toys": {"classic": 0.12, "premium": 0.17},
+    "books": {"classic": 0.10, "premium": 0.15}
+  },
+  "low_ticket_fixed_fee": {"unit_price_below": 79.00, "fee_per_unit": 6.25},
+  "seller_shipping": {
+    "free_shipping_threshold": 79.00,
+    "cost": {"standard": 21.90, "heavy": 39.90}
+  },
+  "refunds": {"commission_refunded": true, "shipping_refunded": false},
+  "chargebacks": {"commission_refunded": false, "shipping_refunded": false},
+  "rounding": "half_up_to_cents",
+  "tolerance_brl": 0.02
+}

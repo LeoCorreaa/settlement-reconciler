@@ -1,0 +1,23 @@
+{
+  "case_id": "case_06",
+  "divergences": [
+    {
+      "order_id": "MLB-060014",
+      "type": "WRONG_SHIPPING_DEDUCTION",
+      "impact_brl": "21.90",
+      "note": "shipping deducted twice (21.90 extra)"
+    },
+    {
+      "order_id": "MLB-060018",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "24.77",
+      "note": "refund debited the gross but did not return the commission (24.77 shorted)"
+    },
+    {
+      "order_id": "MLB-060020",
+      "type": "DUPLICATE_SETTLEMENT",
+      "impact_brl": "-553.78",
+      "note": "payment settled twice; 553.78 will be clawed back"
+    }
+  ]
+}

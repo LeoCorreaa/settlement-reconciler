@@ -1,0 +1,8 @@
+{
+  "case_id": "case_07",
+  "seed": 1007,
+  "n_orders": 55,
+  "n_settlement_rows": 63,
+  "n_divergences": 5,
+  "difficulty": "normal"
+}

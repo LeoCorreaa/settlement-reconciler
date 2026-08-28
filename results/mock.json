@@ -1,0 +1,453 @@
+{
+  "label": "mock",
+  "solver": "mock",
+  "variant": null,
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-28T16:45:26+00:00",
+  "aggregate": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 0,
+    "fn": 42,
+    "clean_case_fps": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "seconds": 0.0,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_01",
+      "difficulty": "clean",
+      "n_truth": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_02",
+      "difficulty": "clean",
+      "n_truth": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_03",
+      "difficulty": "normal",
+      "n_truth": 4,
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-030004",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030011",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-030015",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-030038",
+          "FEE_OVERCHARGE"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_04",
+      "difficulty": "normal",
+      "n_truth": 3,
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-040019",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-040021",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-049273",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_05",
+      "difficulty": "normal",
+      "n_truth": 4,
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-050016",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-050031",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-050034",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-050050",
+          "REFUND_NOT_SETTLED"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_06",
+      "difficulty": "normal",
+      "n_truth": 3,
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-060014",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-060018",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-060020",
+          "DUPLICATE_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_07",
+      "difficulty": "normal",
+      "n_truth": 5,
+      "tp": 0,
+      "fp": 0,
+      "fn": 5,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-070026",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-070029",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-070041",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-070051",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-079886",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_08",
+      "difficulty": "normal",
+      "n_truth": 3,
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-080007",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-080013",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-080043",
+          "FEE_OVERCHARGE"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_09",
+      "difficulty": "normal",
+      "n_truth": 4,
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-090020",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090028",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-090046",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-099856",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_10",
+      "difficulty": "normal",
+      "n_truth": 5,
+      "tp": 0,
+      "fp": 0,
+      "fn": 5,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-100018",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-100026",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-100034",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-100057",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-100058",
+          "FEE_OVERCHARGE"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_11",
+      "difficulty": "normal",
+      "n_truth": 2,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-110004",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-110026",
+          "DUPLICATE_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    },
+    {
+      "case": "case_12",
+      "difficulty": "hard",
+      "n_truth": 9,
+      "tp": 0,
+      "fp": 0,
+      "fn": 9,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-120009",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-120010",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-120023",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-120024",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120042",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-120062",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-120069",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-120077",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-129265",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "findings": [],
+      "steps": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "seconds": 0.0,
+      "notes": "mock solver, reports nothing",
+      "error": "",
+      "trajectory": ""
+    }
+  ]
+}

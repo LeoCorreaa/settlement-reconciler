@@ -1,0 +1,29 @@
+{
+  "case_id": "case_03",
+  "divergences": [
+    {
+      "order_id": "MLB-030004",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "6.90",
+      "note": "commission charged 1.85 pp above the contracted rate (6.90 extra)"
+    },
+    {
+      "order_id": "MLB-030011",
+      "type": "DUPLICATE_SETTLEMENT",
+      "impact_brl": "-2435.90",
+      "note": "payment settled twice; 2435.90 will be clawed back"
+    },
+    {
+      "order_id": "MLB-030015",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "255.58",
+      "note": "paid order has no settlement rows; seller is owed 255.58"
+    },
+    {
+      "order_id": "MLB-030038",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "31.21",
+      "note": "commission charged 2.27 pp above the contracted rate (31.21 extra)"
+    }
+  ]
+}

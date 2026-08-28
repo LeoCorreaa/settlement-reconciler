@@ -1,0 +1,17 @@
+{
+  "case_id": "case_11",
+  "divergences": [
+    {
+      "order_id": "MLB-110004",
+      "type": "MISSING_SETTLEMENT",
+      "impact_brl": "58.99",
+      "note": "paid order has no settlement rows; seller is owed 58.99"
+    },
+    {
+      "order_id": "MLB-110026",
+      "type": "DUPLICATE_SETTLEMENT",
+      "impact_brl": "-1370.06",
+      "note": "payment settled twice; 1370.06 will be clawed back"
+    }
+  ]
+}
