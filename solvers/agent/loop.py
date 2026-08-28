@@ -47,8 +47,9 @@ def run(case_dir: Path, model: str, variant: str = "v2",
     case = common.load_case(case_dir)
     tools = CaseTools(case, variant)
     system = prompts.system_prompt(variant)
+    model_tag = model.replace("claude-", "")
     trajectory_path = trajectory_path or (
-        config.TRAJECTORIES_DIR / f"{case_dir.name}_agent_{variant}.jsonl")
+        config.TRAJECTORIES_DIR / f"{case_dir.name}_agent_{variant}_{model_tag}.jsonl")
     traj = Trajectory(trajectory_path)
     traj.log("start", case=case_dir.name, variant=variant, model=model,
              system_prompt=system, kickoff=prompts.KICKOFF)

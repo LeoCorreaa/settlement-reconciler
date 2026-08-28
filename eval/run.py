@@ -64,7 +64,9 @@ def main() -> None:
     parser.add_argument("--model", default=config.MODEL)
     args = parser.parse_args()
 
-    label = args.solver if args.solver != "agent" else f"agent_{args.variant}"
+    model_tag = args.model.replace("claude-", "")
+    base = args.solver if args.solver != "agent" else f"agent_{args.variant}"
+    label = f"{base}_{model_tag}"
     if args.cases == "all":
         case_dirs = sorted(d for d in config.CASES_DIR.iterdir() if d.is_dir())
     else:
