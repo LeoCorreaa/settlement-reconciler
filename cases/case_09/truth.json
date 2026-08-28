@@ -26,6 +26,18 @@
       "note": "payment settled twice; 405.48 will be clawed back"
     },
     {
+      "order_id": "MLB-090140",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "43.85",
+      "note": "commission on the payment charged 2.75 pp above the rate (43.85 extra) - compound with a refund error"
+    },
+    {
+      "order_id": "MLB-090140",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "207.29",
+      "note": "refund debited the gross but did not return the commission (207.29 shorted) - compound with a fee error"
+    },
+    {
       "order_id": "MLB-090238",
       "type": "MISSING_SETTLEMENT",
       "impact_brl": "161.26",

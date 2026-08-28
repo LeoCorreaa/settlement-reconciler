@@ -14,6 +14,18 @@
       "note": "commission charged 1.78 pp above the contracted rate (1.93 extra)"
     },
     {
+      "order_id": "MLB-060070",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "2.46",
+      "note": "commission charged 1.87 pp above the rate (2.46 extra) - compound with a shipping error"
+    },
+    {
+      "order_id": "MLB-060070",
+      "type": "WRONG_SHIPPING_DEDUCTION",
+      "impact_brl": "18.00",
+      "note": "charged the heavy shipping rate on a standard-weight order (18.00 extra) - compound with a fee error"
+    },
+    {
       "order_id": "MLB-060087",
       "type": "MISSING_SETTLEMENT",
       "impact_brl": "172.10",

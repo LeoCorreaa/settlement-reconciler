@@ -3,6 +3,6 @@
   "seed": 1011,
   "n_orders": 350,
   "n_settlement_rows": 396,
-  "n_divergences": 7,
+  "n_divergences": 9,
   "difficulty": "normal"
 }

@@ -20,6 +20,12 @@
       "note": "cancelled order was settled as if sold; expect a clawback"
     },
     {
+      "order_id": "MLB-080086",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "0.46",
+      "note": "subtle commission overcharge of 0.46 on a 4219.64 order (above the 0.02 tolerance)"
+    },
+    {
       "order_id": "MLB-080113",
       "type": "FEE_OVERCHARGE",
       "impact_brl": "14.25",

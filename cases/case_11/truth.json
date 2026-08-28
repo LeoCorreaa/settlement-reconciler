@@ -14,6 +14,18 @@
       "note": "refund debited the gross but did not return the commission (15.23 shorted)"
     },
     {
+      "order_id": "MLB-110151",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "3.42",
+      "note": "commission charged 1.68 pp above the rate (3.42 extra) - compound with a shipping error"
+    },
+    {
+      "order_id": "MLB-110151",
+      "type": "WRONG_SHIPPING_DEDUCTION",
+      "impact_brl": "18.00",
+      "note": "charged the heavy shipping rate on a standard-weight order (18.00 extra) - compound with a fee error"
+    },
+    {
       "order_id": "MLB-110166",
       "type": "FEE_OVERCHARGE",
       "impact_brl": "42.69",

@@ -2,6 +2,12 @@
   "case_id": "case_12",
   "divergences": [
     {
+      "order_id": "MLB-120018",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "0.37",
+      "note": "subtle commission overcharge of 0.37 on a 2031.52 order (above the 0.02 tolerance)"
+    },
+    {
       "order_id": "MLB-120048",
       "type": "DUPLICATE_SETTLEMENT",
       "impact_brl": "-59.61",
@@ -24,6 +30,18 @@
       "type": "WRONG_SHIPPING_DEDUCTION",
       "impact_brl": "18.00",
       "note": "charged the heavy shipping rate for a standard-weight order (18.00 extra)"
+    },
+    {
+      "order_id": "MLB-120125",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "1.79",
+      "note": "commission on the payment charged 1.68 pp above the rate (1.79 extra) - compound with a refund error"
+    },
+    {
+      "order_id": "MLB-120125",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "11.70",
+      "note": "refund debited the gross but did not return the commission (11.70 shorted) - compound with a fee error"
     },
     {
       "order_id": "MLB-120185",

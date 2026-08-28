@@ -52,20 +52,21 @@ CASE_SPECS: list[tuple[str, int, str, list[str]]] = [
     ("case_03", 50, "normal", ["MISSING_SETTLEMENT", "FEE_OVERCHARGE", "FEE_OVERCHARGE", "DUPLICATE_SETTLEMENT"]),
     ("case_04", 60, "normal", ["WRONG_SHIPPING_DEDUCTION", "WRONG_SHIPPING_DEDUCTION", "ORPHAN_SETTLEMENT"]),
     ("case_05", 80, "normal", ["REFUND_NOT_SETTLED", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH"]),
-    ("case_06", 120, "normal", ["REFUND_AMOUNT_MISMATCH", "DUPLICATE_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE", "MISSING_SETTLEMENT"]),
+    ("case_06", 120, "normal", ["REFUND_AMOUNT_MISMATCH", "DUPLICATE_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "COMBO_FEE_SHIP"]),
     ("case_07", 160, "normal", ["FEE_OVERCHARGE", "ORPHAN_SETTLEMENT", "REFUND_NOT_SETTLED", "MISSING_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION", "CANCELLED_BUT_SETTLED"]),
-    ("case_08", 200, "normal", ["CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE", "DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION"]),
-    ("case_09", 250, "normal", ["DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT", "FEE_OVERCHARGE", "REFUND_NOT_SETTLED", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE"]),
-    ("case_10", 300, "normal", ["WRONG_SHIPPING_DEDUCTION", "REFUND_NOT_SETTLED", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT"]),
-    ("case_11", 350, "normal", ["MISSING_SETTLEMENT", "DUPLICATE_SETTLEMENT", "FEE_OVERCHARGE", "REFUND_AMOUNT_MISMATCH", "WRONG_SHIPPING_DEDUCTION", "CANCELLED_BUT_SETTLED", "REFUND_NOT_SETTLED"]),
-    # Hard case: real mid-size monthly volume, subtle overcharges, and a combo
-    # order that is partially refunded AND split-settled AND shorted on the
-    # refunded commission.
+    ("case_08", 200, "normal", ["CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE", "DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE_SUBTLE"]),
+    ("case_09", 250, "normal", ["DUPLICATE_SETTLEMENT", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT", "FEE_OVERCHARGE", "REFUND_NOT_SETTLED", "WRONG_SHIPPING_DEDUCTION", "FEE_OVERCHARGE", "COMBO_REFUND_FEE"]),
+    ("case_10", 300, "normal", ["WRONG_SHIPPING_DEDUCTION", "REFUND_NOT_SETTLED", "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH", "FEE_OVERCHARGE", "MISSING_SETTLEMENT", "ORPHAN_SETTLEMENT", "FEE_OVERCHARGE_SUBTLE"]),
+    ("case_11", 350, "normal", ["MISSING_SETTLEMENT", "DUPLICATE_SETTLEMENT", "FEE_OVERCHARGE", "REFUND_AMOUNT_MISMATCH", "WRONG_SHIPPING_DEDUCTION", "CANCELLED_BUT_SETTLED", "REFUND_NOT_SETTLED", "COMBO_FEE_SHIP"]),
+    # Hard case: real mid-size monthly volume, subtle and compound
+    # divergences, and a combo order that is partially refunded AND
+    # split-settled AND shorted on the refunded commission.
     ("case_12", 400, "hard", [
         "MISSING_SETTLEMENT", "DUPLICATE_SETTLEMENT", "ORPHAN_SETTLEMENT",
         "FEE_OVERCHARGE", "FEE_OVERCHARGE", "WRONG_SHIPPING_DEDUCTION",
         "WRONG_SHIPPING_DEDUCTION", "REFUND_NOT_SETTLED",
         "CANCELLED_BUT_SETTLED", "REFUND_AMOUNT_MISMATCH",
+        "COMBO_REFUND_FEE", "FEE_OVERCHARGE_SUBTLE",
     ]),
 ]
 
@@ -191,10 +192,17 @@ def pick(rng: random.Random, orders: list[dict], used: set[str], predicate) -> d
 def apply_corruption(kind: str, orders: list[dict], book: SettlementBook,
                      schedule: dict, rng: random.Random, used: set[str],
                      case_num: int, prefer_order: str | None = None) -> dict:
-    """Mutate the book to plant divergence `kind`; return the truth entry."""
+    """Mutate the book to plant divergence `kind`; return truth entry/entries.
 
-    def truth(order_id: str, impact_cents: int, note: str) -> dict:
-        return {"order_id": order_id, "type": kind,
+    Compound kinds (COMBO_*) corrupt one order in two distinct ways and return
+    TWO truth entries - the scan sees a single net delta and the agent must
+    decompose it into both root causes. FEE_OVERCHARGE_SUBTLE plants a
+    cents-sized overcharge that looks like rounding noise but is above the
+    contractual tolerance.
+    """
+
+    def truth(order_id: str, impact_cents: int, note: str, type_: str | None = None) -> dict:
+        return {"order_id": order_id, "type": type_ or kind,
                 "impact_brl": money(impact_cents), "note": note}
 
     if kind == "MISSING_SETTLEMENT":
@@ -284,6 +292,76 @@ def apply_corruption(kind: str, orders: list[dict], book: SettlementBook,
         return truth(order["order_id"], shorted,
                      f"refund debited the gross but did not return the commission ({money(shorted)} shorted)")
 
+    if kind == "FEE_OVERCHARGE_SUBTLE":
+        order = pick(rng, orders, used,
+                     lambda o: o["status"] in PAID_STATUSES
+                     and len(rows_of(book, o["order_id"], "payment")) == 1
+                     and o["gross_cents"] >= 50000)
+        assert order, "no eligible order for FEE_OVERCHARGE_SUBTLE"
+        row = rows_of(book, order["order_id"], "payment")[0]
+        extra = rng.randint(30, 80)  # cents: looks like rounding, is not
+        row["fee_cents"] -= extra
+        row["net_cents"] -= extra
+        return truth(order["order_id"], extra,
+                     f"subtle commission overcharge of {money(extra)} on a "
+                     f"{money(order['gross_cents'])} order (above the 0.02 tolerance)",
+                     type_="FEE_OVERCHARGE")
+
+    if kind == "COMBO_FEE_SHIP":
+        order = pick(rng, orders, used,
+                     lambda o: o["status"] in PAID_STATUSES
+                     and len(rows_of(book, o["order_id"], "payment")) == 1
+                     and o["gross_cents"] >= 10000
+                     and o["weight_class"] == "standard"
+                     and shipping_cents(o, schedule) > 0)
+        assert order, "no eligible order for COMBO_FEE_SHIP"
+        row = rows_of(book, order["order_id"], "payment")[0]
+        extra_bp = rng.randint(150, 300)
+        extra = half_up(order["gross_cents"] * extra_bp, 10000)
+        row["fee_cents"] -= extra
+        row["net_cents"] -= extra
+        ship_delta = (schedule["shipping_cost_cents"]["heavy"]
+                      - schedule["shipping_cost_cents"]["standard"])
+        row["shipping_cents"] -= ship_delta
+        row["net_cents"] -= ship_delta
+        return [
+            truth(order["order_id"], extra,
+                  f"commission charged {extra_bp / 100:.2f} pp above the rate "
+                  f"({money(extra)} extra) - compound with a shipping error",
+                  type_="FEE_OVERCHARGE"),
+            truth(order["order_id"], ship_delta,
+                  f"charged the heavy shipping rate on a standard-weight order "
+                  f"({money(ship_delta)} extra) - compound with a fee error",
+                  type_="WRONG_SHIPPING_DEDUCTION"),
+        ]
+
+    if kind == "COMBO_REFUND_FEE":
+        order = pick(rng, orders, used,
+                     lambda o: o["status"] in ("refunded", "partially_refunded")
+                     and len(rows_of(book, o["order_id"], "payment")) == 1
+                     and len(rows_of(book, o["order_id"], "refund")) == 1
+                     and o["gross_cents"] >= 10000)
+        assert order, "no eligible order for COMBO_REFUND_FEE"
+        payment_row = rows_of(book, order["order_id"], "payment")[0]
+        extra_bp = rng.randint(150, 300)
+        extra = half_up(order["gross_cents"] * extra_bp, 10000)
+        payment_row["fee_cents"] -= extra
+        payment_row["net_cents"] -= extra
+        refund_row = rows_of(book, order["order_id"], "refund")[0]
+        shorted = refund_row["fee_cents"]
+        refund_row["fee_cents"] = 0
+        refund_row["net_cents"] -= shorted
+        return [
+            truth(order["order_id"], extra,
+                  f"commission on the payment charged {extra_bp / 100:.2f} pp above "
+                  f"the rate ({money(extra)} extra) - compound with a refund error",
+                  type_="FEE_OVERCHARGE"),
+            truth(order["order_id"], shorted,
+                  f"refund debited the gross but did not return the commission "
+                  f"({money(shorted)} shorted) - compound with a fee error",
+                  type_="REFUND_AMOUNT_MISMATCH"),
+        ]
+
     if kind == "CANCELLED_BUT_SETTLED":
         order = pick(rng, orders, used, lambda o: o["status"] == "cancelled")
         assert order, "no eligible order for CANCELLED_BUT_SETTLED"
@@ -364,8 +442,9 @@ def generate_case(spec: tuple[str, int, str, list[str]], schedule: dict) -> None
     truths = []
     for kind in plan:
         prefer = prefer_order if kind == "REFUND_AMOUNT_MISMATCH" else None
-        truths.append(apply_corruption(kind, orders, book, schedule, rng, used,
-                                       case_num, prefer_order=prefer))
+        result = apply_corruption(kind, orders, book, schedule, rng, used,
+                                  case_num, prefer_order=prefer)
+        truths.extend(result if isinstance(result, list) else [result])
 
     meta = {
         "case_id": case_id,

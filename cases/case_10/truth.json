@@ -32,6 +32,12 @@
       "note": "commission charged 2.81 pp above the contracted rate (11.41 extra)"
     },
     {
+      "order_id": "MLB-100187",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "0.68",
+      "note": "subtle commission overcharge of 0.68 on a 2380.47 order (above the 0.02 tolerance)"
+    },
+    {
       "order_id": "MLB-100300",
       "type": "REFUND_NOT_SETTLED",
       "impact_brl": "-8.37",
