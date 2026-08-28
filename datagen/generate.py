@@ -419,7 +419,7 @@ def write_case(case_dir: Path, orders: list[dict], book: SettlementBook,
     (case_dir / "case.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
 
 
-def generate_case(spec: tuple[str, int, str, list[str]], schedule: dict) -> None:
+def generate_case(spec: tuple[str, int, str, list[str]], schedule: dict) -> int:
     case_id, n_orders, difficulty, plan = spec
     case_num = int(case_id.split("_")[1])
     rng = random.Random(1000 + case_num)
@@ -457,15 +457,14 @@ def generate_case(spec: tuple[str, int, str, list[str]], schedule: dict) -> None
     write_case(config.CASES_DIR / case_id, orders, book, truths, meta)
     print(f"{case_id}: {n_orders} orders, {len(book.rows)} settlement rows, "
           f"{len(truths)} divergences ({difficulty})")
+    return len(truths)
 
 
 def main() -> None:
     schedule = load_fee_schedule()
     if config.CASES_DIR.exists():
         shutil.rmtree(config.CASES_DIR)
-    for spec in CASE_SPECS:
-        generate_case(spec, schedule)
-    total = sum(len(spec[3]) for spec in CASE_SPECS)
+    total = sum(generate_case(spec, schedule) for spec in CASE_SPECS)
     print(f"\n{len(CASE_SPECS)} cases, {total} planted divergences total.")
 
 
