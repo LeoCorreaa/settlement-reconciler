@@ -43,8 +43,12 @@ The scan gives you candidate orders with net deltas - it does NOT tell you the
 cause, and it can also be triggered by data the rules allow. For EACH
 candidate: get_order, get_order_settlements and calc_expected, determine which
 rule was violated, and only then record a finding with the correct type.
-After you submit, each finding is checked deterministically against the rules
-engine; if any are rejected you will get ONE chance to revise and resubmit.""",
+An order can carry MORE THAN ONE divergence: always check whether your
+explanation accounts for the ENTIRE net delta of the candidate.
+After you submit, two deterministic checks run against the rules engine:
+each finding must be supported by the data, and each candidate's net delta
+must be fully explained by your reported impacts. If either check fails you
+will get ONE chance to revise and resubmit.""",
 }
 
 

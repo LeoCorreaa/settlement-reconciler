@@ -1,15 +1,23 @@
 """Deterministic verification of submitted findings (v3).
 
-Each finding is fact-checked against the rules engine and the observed rows -
-never against truth.json. A finding that the data cannot support is rejected
-with a concrete reason, which is fed back to the agent for one revision round.
+Two independent checks, both against the rules engine and the observed rows -
+never against truth.json:
+
+1. Presence: a finding the data cannot support is rejected with a concrete
+   reason (kills false positives).
+2. Completeness: per order, the observed net delta must be fully explained by
+   the sum of the reported impacts; an unexplained residual above tolerance
+   means a divergence is missing or an impact amount is wrong (kills false
+   negatives - e.g. reporting only one cause of a compound divergence).
+
+Failures are fed back to the agent for one revision round.
 """
 
 from __future__ import annotations
 
 from collections import defaultdict
 
-from engine import expected_settlement_lines, money
+from engine import expected_settlement_lines, expected_net_cents, money, to_cents
 
 
 def verify_findings(findings: list[dict], case: dict) -> tuple[list[dict], list[dict]]:
@@ -28,6 +36,53 @@ def verify_findings(findings: list[dict], case: dict) -> tuple[list[dict], list[
         else:
             rejected.append({**finding, "reason": reason})
     return accepted, rejected
+
+
+def check_completeness(findings: list[dict], case: dict) -> list[dict]:
+    """Per-order residual check: observed delta must equal -sum(impacts).
+
+    Sign convention: impact_brl is positive when the seller was hurt, so a
+    fully explained order satisfies observed_delta + sum(impacts) ~ 0.
+    Returns a list of {"order_id", "reason"} issues.
+    """
+    schedule = case["schedule"]
+    tolerance = schedule["tolerance_cents"]
+
+    rows_by_order: dict[str, list[dict]] = defaultdict(list)
+    for row in case["settlements"]:
+        rows_by_order[row["order_id"]].append(row)
+
+    deltas: dict[str, int] = {}
+    for order in case["orders"]:
+        observed = sum(r["net_cents"] for r in rows_by_order.get(order["order_id"], []))
+        delta = observed - expected_net_cents(order, schedule)
+        if abs(delta) > tolerance:
+            deltas[order["order_id"]] = delta
+    for order_id, rows in rows_by_order.items():
+        if order_id not in case["orders_by_id"]:
+            deltas[order_id] = sum(r["net_cents"] for r in rows)
+
+    impacts: dict[str, int] = defaultdict(int)
+    issues: list[dict] = []
+    for finding in findings:
+        try:
+            impacts[finding["order_id"]] += to_cents(finding.get("impact_brl", "0"))
+        except (ValueError, TypeError):
+            issues.append({"order_id": finding["order_id"],
+                           "reason": f"impact_brl '{finding.get('impact_brl')}' is not a parseable amount"})
+
+    for order_id, delta in sorted(deltas.items()):
+        residual = delta + impacts.get(order_id, 0)
+        if abs(residual) > tolerance:
+            issues.append({
+                "order_id": order_id,
+                "reason": (f"the observed settlement is {money(delta)} off the contract for this "
+                           f"order, but your findings explain {money(-impacts.get(order_id, 0))}; "
+                           f"unexplained residual of {money(residual)}. Either a divergence on "
+                           f"this order is missing from your findings (orders can have MORE THAN "
+                           f"ONE divergence) or an impact amount is wrong."),
+            })
+    return issues
 
 
 def _check(finding: dict, case: dict, rows_by_order: dict, tolerance: int) -> str | None:

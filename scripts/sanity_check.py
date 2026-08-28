@@ -15,11 +15,12 @@ from __future__ import annotations
 
 import json
 import sys
+from collections import Counter
 
 import config
 from solvers import common
 from solvers.agent.tools import CaseTools
-from solvers.agent.verify import verify_findings
+from solvers.agent.verify import check_completeness, verify_findings
 
 failures = 0
 
@@ -66,6 +67,23 @@ def main() -> None:
         accepted, rejected = verify_findings(bogus, case)
         for a in accepted:
             fail(f"verifier accepted BOGUS finding {a['order_id']} FEE_OVERCHARGE")
+
+        # 3c. the full truth set must leave no unexplained residuals
+        for issue in check_completeness(as_findings, case):
+            fail(f"completeness flags residual with FULL truth on {issue['order_id']}")
+
+        # 3d. dropping one divergence of a compound order must be caught
+        multi = [oid for oid, n in Counter(t["order_id"] for t in truths).items() if n > 1]
+        for target in multi:
+            removed_one = False
+            partial = []
+            for f in as_findings:
+                if not removed_one and f["order_id"] == target:
+                    removed_one = True
+                    continue
+                partial.append(f)
+            if not any(i["order_id"] == target for i in check_completeness(partial, case)):
+                fail(f"completeness misses a dropped divergence on compound order {target}")
 
     print()
     if failures:

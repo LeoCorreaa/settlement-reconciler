@@ -17,7 +17,7 @@ import config
 from solvers import common
 from solvers.agent import prompts
 from solvers.agent.tools import CaseTools
-from solvers.agent.verify import verify_findings
+from solvers.agent.verify import check_completeness, verify_findings
 
 MAX_STEPS = 60
 MAX_TOKENS_PER_TURN = 8000
@@ -144,27 +144,33 @@ def run(case_dir: Path, model: str, variant: str = "v2",
             submitted = tools.submitted or []
             if variant == "v3":
                 ok, rejected = verify_findings(submitted, case)
+                completeness = check_completeness(ok, case)
                 traj.log("verification", accepted=len(ok),
                          rejected=[{"order_id": r["order_id"], "type": r["type"],
-                                    "reason": r["reason"]} for r in rejected])
-                if rejected and not verify_retry_used:
+                                    "reason": r["reason"]} for r in rejected],
+                         completeness_issues=completeness)
+                if (rejected or completeness) and not verify_retry_used:
                     verify_retry_used = True
                     tools.submitted = None
                     feedback = json.dumps({
                         "accepted": False,
-                        "verification_failures": [
+                        "rejected_findings": [
                             {"order_id": r["order_id"], "type": r["type"],
                              "reason": r["reason"]} for r in rejected],
-                        "instruction": ("These findings failed deterministic "
-                                        "verification against the rules engine. "
-                                        "Re-investigate and call submit_findings "
-                                        "again with the corrected FULL list."),
+                        "unexplained_residuals": completeness,
+                        "instruction": ("Deterministic verification failed: rejected "
+                                        "findings are not supported by the data, and "
+                                        "unexplained residuals mean an order's delta is "
+                                        "not fully accounted for (orders can carry MORE "
+                                        "THAN ONE divergence). Re-investigate and call "
+                                        "submit_findings again with the corrected FULL list."),
                     })
                     traj.log("tool_result", tool=block.name, output=json.loads(feedback))
                     results.append(_tool_result(block.id, feedback))
                     continue
-                if rejected:
-                    notes = f"{len(rejected)} finding(s) still rejected after retry; dropped"
+                if rejected or completeness:
+                    notes = (f"after retry: {len(rejected)} rejected finding(s) dropped, "
+                             f"{len(completeness)} residual(s) left unexplained")
                 findings = ok
             else:
                 findings = submitted
