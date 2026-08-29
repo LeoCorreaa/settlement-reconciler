@@ -1,0 +1,22 @@
+{
+  "case_id": "case_13",
+  "seed": 1013,
+  "n_orders": 150,
+  "n_settlement_rows": 161,
+  "n_divergences": 2,
+  "difficulty": "generalization",
+  "promo_eligible_orders": [
+    "MLB-130001",
+    "MLB-130002",
+    "MLB-130004",
+    "MLB-130006",
+    "MLB-130007",
+    "MLB-130008",
+    "MLB-130009",
+    "MLB-130010",
+    "MLB-130011",
+    "MLB-130012",
+    "MLB-130013",
+    "MLB-130014"
+  ]
+}

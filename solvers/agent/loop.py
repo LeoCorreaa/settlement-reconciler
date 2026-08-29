@@ -43,9 +43,9 @@ def _tool_result(tool_use_id: str, content: str) -> dict:
 
 
 def run(case_dir: Path, model: str, variant: str = "v2",
-        trajectory_path: Path | None = None) -> dict:
+        trajectory_path: Path | None = None, notices_enabled: bool = True) -> dict:
     case = common.load_case(case_dir)
-    tools = CaseTools(case, variant)
+    tools = CaseTools(case, variant, notices_enabled=notices_enabled)
     system = prompts.system_prompt(variant)
     model_tag = model.replace("claude-", "")
     trajectory_path = trajectory_path or (

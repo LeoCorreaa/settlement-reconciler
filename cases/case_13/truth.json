@@ -1,0 +1,17 @@
+{
+  "case_id": "case_13",
+  "divergences": [
+    {
+      "order_id": "MLB-130012",
+      "type": "FEE_OVERCHARGE",
+      "impact_brl": "8.49",
+      "note": "July Tech Promo discount was NOT applied: charged the standard rate instead of the promotional one (8.49 extra)"
+    },
+    {
+      "order_id": "MLB-130052",
+      "type": "REFUND_AMOUNT_MISMATCH",
+      "impact_brl": "1.72",
+      "note": "refund debited the gross but did not return the commission (1.72 shorted)"
+    }
+  ]
+}

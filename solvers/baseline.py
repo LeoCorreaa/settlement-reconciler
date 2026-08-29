@@ -30,7 +30,7 @@ Rules document:
 <fee_rules>
 {fee_rules}
 </fee_rules>
-
+{notices_block}
 <orders_csv>
 {orders_csv}
 </orders_csv>
@@ -51,9 +51,17 @@ divergences, and net differences of up to 0.02 are rounding noise."""
 
 def solve(case_dir: Path, model: str) -> dict:
     orders_csv, settlement_csv = common.read_raw_csvs(case_dir)
+    notices_path = case_dir / "notices.md"
+    notices_block = ""
+    if notices_path.exists():
+        notices_block = ("\nMonth-specific marketplace notices (may supersede the standard "
+                         "rules for specific orders):\n<notices>\n"
+                         + notices_path.read_text(encoding="utf-8")
+                         + "\n</notices>\n")
     prompt = PROMPT_TEMPLATE.format(
         types="\n".join(f"- {t}" for t in config.DIVERGENCE_TYPES),
         fee_rules=common.fee_rules_text(),
+        notices_block=notices_block,
         orders_csv=orders_csv,
         settlement_csv=settlement_csv,
     )

@@ -41,7 +41,8 @@ def score(findings: list[dict], truths: list[dict]) -> dict:
     return {"tp": tp, "fp": fp, "fn": fn}
 
 
-def run_solver(solver: str, variant: str, case_dir: Path, model: str) -> dict:
+def run_solver(solver: str, variant: str, case_dir: Path, model: str,
+               tag: str = "", no_notices: bool = False) -> dict:
     if solver == "mock":
         from solvers import mock
         return mock.solve(case_dir, model)
@@ -50,7 +51,14 @@ def run_solver(solver: str, variant: str, case_dir: Path, model: str) -> dict:
         return baseline.solve(case_dir, model)
     if solver == "agent":
         from solvers.agent import loop
-        return loop.run(case_dir, model, variant=variant)
+        trajectory_path = None
+        if tag or no_notices:
+            model_tag = model.replace("claude-", "")
+            suffix = "".join(["_blind" if no_notices else "", f"_{tag}" if tag else ""])
+            trajectory_path = (config.TRAJECTORIES_DIR /
+                               f"{case_dir.name}_agent_{variant}_{model_tag}{suffix}.jsonl")
+        return loop.run(case_dir, model, variant=variant, trajectory_path=trajectory_path,
+                        notices_enabled=not no_notices)
     raise ValueError(f"unknown solver {solver}")
 
 
@@ -62,13 +70,22 @@ def main() -> None:
     parser.add_argument("--cases", default="all",
                         help="'all' or comma-separated case ids (e.g. case_03,case_12)")
     parser.add_argument("--model", default=config.MODEL)
+    parser.add_argument("--tag", default="",
+                        help="suffix for result/trajectory names (e.g. r1 for variance replicas)")
+    parser.add_argument("--no-notices", action="store_true",
+                        help="hide the get_notices tool from the agent (blind run)")
     args = parser.parse_args()
 
     model_tag = args.model.replace("claude-", "")
     base = args.solver if args.solver != "agent" else f"agent_{args.variant}"
-    label = f"{base}_{model_tag}"
+    if args.no_notices:
+        base += "_blind"
+    label = f"{base}_{model_tag}" + (f"_{args.tag}" if args.tag else "")
     if args.cases == "all":
-        case_dirs = sorted(d for d in config.CASES_DIR.iterdir() if d.is_dir())
+        # "all" means the standard 12-case benchmark; special cases (e.g. the
+        # generalization case_13) run only when named explicitly.
+        case_dirs = [d for d in sorted(config.CASES_DIR.iterdir())
+                     if d.is_dir() and load_meta(d).get("difficulty") != "generalization"]
     else:
         case_dirs = [config.CASES_DIR / c.strip() for c in args.cases.split(",")]
 
@@ -84,7 +101,8 @@ def main() -> None:
         meta = load_meta(case_dir)
         started = time.time()
         try:
-            result = run_solver(args.solver, args.variant, case_dir, args.model)
+            result = run_solver(args.solver, args.variant, case_dir, args.model,
+                                tag=args.tag, no_notices=args.no_notices)
             error = ""
         except Exception as exc:
             result = {"findings": [], "usage": {"input_tokens": 0, "output_tokens": 0},

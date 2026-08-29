@@ -36,11 +36,33 @@ def main() -> None:
     case_dirs = sorted(d for d in config.CASES_DIR.iterdir() if d.is_dir())
     for case_dir in case_dirs:
         truths = json.loads((case_dir / "truth.json").read_text(encoding="utf-8"))["divergences"]
+        meta = json.loads((case_dir / "case.json").read_text(encoding="utf-8"))
         case = common.load_case(case_dir)
         tools = CaseTools(case, "v2")
         scan = json.loads(tools.execute("scan_mismatches", {}))
         candidate_ids = {c["order_id"] for c in scan["candidates"]}
         truth_ids = {t["order_id"] for t in truths}
+
+        if meta["difficulty"] == "generalization":
+            # case_13 inverts the usual contract: the standard-rules scan MUST
+            # flag the legitimate promo orders as noise, MUST miss the
+            # promo-not-applied divergence (it looks correct under standard
+            # rules), and must still see the ordinary refund divergence.
+            promo_ids = set(meta["promo_eligible_orders"])
+            victim = next(t["order_id"] for t in truths if t["type"] == "FEE_OVERCHARGE")
+            refund_truth = next(t["order_id"] for t in truths
+                                if t["type"] == "REFUND_AMOUNT_MISMATCH")
+            print(f"{case_dir.name}: {len(truths)} real truths, "
+                  f"{len(candidate_ids)} scan candidates (promo noise expected)")
+            if len(candidate_ids) < 10:
+                fail("expected heavy promo noise in the scan (>=10 candidates)")
+            if victim in candidate_ids:
+                fail(f"promo victim {victim} should be INVISIBLE to the standard-rules scan")
+            if refund_truth not in candidate_ids:
+                fail(f"refund divergence {refund_truth} must be visible to the scan")
+            for promo_id in sorted(promo_ids - {victim} - candidate_ids):
+                fail(f"legitimate promo order {promo_id} should look like a candidate")
+            continue
 
         print(f"{case_dir.name}: {len(truths)} truths, {len(candidate_ids)} scan candidates")
 

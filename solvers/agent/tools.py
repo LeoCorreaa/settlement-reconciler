@@ -40,10 +40,12 @@ def _compact_row(r: dict) -> dict:
 
 
 class CaseTools:
-    def __init__(self, case: dict, variant: str):
+    def __init__(self, case: dict, variant: str, notices_enabled: bool = True):
         self.case = case
         self.variant = variant
         self.schedule = case["schedule"]
+        self.notices_path = case["case_dir"] / "notices.md"
+        self.notices_enabled = notices_enabled and self.notices_path.exists()
         self.rows_by_order: dict[str, list[dict]] = defaultdict(list)
         for row in case["settlements"]:
             self.rows_by_order[row["order_id"]].append(row)
@@ -127,6 +129,15 @@ class CaseTools:
                 },
             },
         ]
+        if self.notices_enabled:
+            tools.insert(2, {
+                "name": "get_notices",
+                "description": ("Month-specific notices from the marketplace (promotions, "
+                                "temporary rule changes). IMPORTANT: the fee rules document and "
+                                "every calculator tool reflect ONLY the standard contract; a "
+                                "notice may supersede them for specific orders."),
+                "input_schema": {"type": "object", "properties": {}},
+            })
         if self.variant != "v1":
             tools.insert(2, {
                 "name": "scan_mismatches",
@@ -174,6 +185,11 @@ class CaseTools:
 
     def tool_get_fee_rules(self) -> dict:
         return {"fee_rules_markdown": config.FEE_RULES_PATH.read_text(encoding="utf-8")}
+
+    def tool_get_notices(self) -> dict:
+        if not self.notices_enabled:
+            return {"notices_markdown": "No notices this month."}
+        return {"notices_markdown": self.notices_path.read_text(encoding="utf-8")}
 
     def tool_list_orders(self, offset: int = 0, status: str = "") -> dict:
         pool = [o for o in self.case["orders"] if not status or o["status"] == status]

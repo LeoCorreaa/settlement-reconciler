@@ -18,6 +18,7 @@ Usage:
 
 from __future__ import annotations
 
+import copy
 import csv
 import json
 import random
@@ -460,12 +461,114 @@ def generate_case(spec: tuple[str, int, str, list[str]], schedule: dict) -> int:
     return len(truths)
 
 
+# ------------------------------------------------- case_13: generalization
+#
+# The standard cases test execution under complete knowledge: every tool knows
+# the full contract. case_13 tests JUDGMENT under acknowledged-incomplete
+# knowledge: a commission promo announced only in a plain-text notice. The
+# settlement applies the promo correctly, but the calculator tools compute
+# from the standard contract, so the deterministic scan flags every eligible
+# promo order as a false candidate. The solver must read the notice, dismiss
+# the noise, and still find the 2 real divergences hidden in it.
+#
+# The v3 verifier is NOT used here by design: its canonical impacts encode the
+# standard contract, so under a promo it would fight the truth - that limit is
+# documented in the README.
+
+PROMO_START = "2026-07-08"
+PROMO_END = "2026-07-18"
+PROMO_DISCOUNT_BP = 200
+
+NOTICE_TEXT = """# Marketplace seller notices - July 2026
+
+**Notice 2026-07-05 - July Tech Promo.** Electronics orders PLACED between
+2026-07-08 and 2026-07-18 (inclusive, by order_date) receive a 2.0 percentage
+point commission discount: classic 11% -> 9%, premium 16% -> 14%. The
+discount is applied automatically on your settlement statement. All other
+charges (low-ticket fixed fee, seller shipping, refund and chargeback
+treatment) are unchanged.
+"""
+
+
+def promo_applies(order: dict) -> bool:
+    return (order["category"] == "electronics"
+            and PROMO_START <= order["order_date"] <= PROMO_END)
+
+
+def generate_case13(schedule: dict) -> int:
+    case_id, case_num, n_orders = "case_13", 13, 150
+    rng = random.Random(1013)
+    orders = build_orders(rng, case_num, n_orders)
+
+    # Guarantee a meaningful pool of promo-eligible paid orders (the noise).
+    eligible = [o for o in orders if o["status"] in PAID_STATUSES][:12]
+    for i, order in enumerate(eligible):
+        order["category"] = "electronics"
+        order["order_date"] = f"2026-07-{8 + (i % 11):02d}"
+        order["weight_class"] = "heavy" if order["unit_price_cents"] > 40000 else "standard"
+
+    promo_schedule = copy.deepcopy(schedule)
+    for listing in promo_schedule["rates_bp"]["electronics"]:
+        promo_schedule["rates_bp"]["electronics"][listing] -= PROMO_DISCOUNT_BP
+
+    book = SettlementBook(case_num)
+    for order in orders:
+        effective = promo_schedule if promo_applies(order) else schedule
+        base = date.fromisoformat(order["order_date"])
+        for line in expected_settlement_lines(order, effective):
+            offset = {"payment": 3, "refund": 10, "chargeback": 15}[line["type"]]
+            book.add(order["order_id"], base + timedelta(days=offset), line["type"],
+                     line["gross_cents"], line["fee_cents"], line["shipping_cents"])
+
+    truths = []
+    # Real divergence 1: one eligible order was charged the STANDARD rate,
+    # i.e. the promised promo discount was not applied.
+    victim = eligible[rng.randrange(len(eligible))]
+    row = rows_of(book, victim["order_id"], "payment")[0]
+    extra = commission_cents(victim, schedule) - commission_cents(victim, promo_schedule)
+    row["fee_cents"] = -commission_cents(victim, schedule)
+    row["net_cents"] = row["gross_cents"] + row["fee_cents"] + row["shipping_cents"]
+    truths.append({"order_id": victim["order_id"], "type": "FEE_OVERCHARGE",
+                   "impact_brl": money(extra),
+                   "note": "July Tech Promo discount was NOT applied: charged the standard "
+                           f"rate instead of the promotional one ({money(extra)} extra)"})
+
+    # Real divergence 2: a plain refund shorted on a NON-electronics order.
+    refunded = [o for o in orders
+                if o["status"] in ("refunded", "partially_refunded")
+                and o["category"] != "electronics"
+                and len(rows_of(book, o["order_id"], "refund")) == 1]
+    target = rng.choice(refunded)
+    refund_row = rows_of(book, target["order_id"], "refund")[0]
+    shorted = refund_row["fee_cents"]
+    refund_row["fee_cents"] = 0
+    refund_row["net_cents"] -= shorted
+    truths.append({"order_id": target["order_id"], "type": "REFUND_AMOUNT_MISMATCH",
+                   "impact_brl": money(shorted),
+                   "note": f"refund debited the gross but did not return the commission "
+                           f"({money(shorted)} shorted)"})
+
+    meta = {
+        "case_id": case_id, "seed": 1013, "n_orders": n_orders,
+        "n_settlement_rows": len(book.rows), "n_divergences": len(truths),
+        "difficulty": "generalization",
+        "promo_eligible_orders": sorted(o["order_id"] for o in eligible),
+    }
+    write_case(config.CASES_DIR / case_id, orders, book, truths, meta)
+    (config.CASES_DIR / case_id / "notices.md").write_text(NOTICE_TEXT, encoding="utf-8")
+    print(f"{case_id}: {n_orders} orders, {len(book.rows)} settlement rows, "
+          f"{len(truths)} REAL divergences + {len(eligible)} promo orders as scan noise "
+          f"(generalization)")
+    return len(truths)
+
+
 def main() -> None:
     schedule = load_fee_schedule()
     if config.CASES_DIR.exists():
         shutil.rmtree(config.CASES_DIR)
     total = sum(generate_case(spec, schedule) for spec in CASE_SPECS)
-    print(f"\n{len(CASE_SPECS)} cases, {total} planted divergences total.")
+    total += generate_case13(schedule)
+    print(f"\n{len(CASE_SPECS) + 1} cases, {total} planted divergences total.")
 
 
 if __name__ == "__main__":

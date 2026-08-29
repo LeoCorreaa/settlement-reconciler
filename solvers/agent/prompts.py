@@ -21,6 +21,10 @@ Critical domain knowledge:
 
 Report ONLY divergences you can attribute to a concrete rule violation.
 Missing a real divergence and inventing a false one are equally bad.
+If a get_notices tool is available, read it BEFORE concluding anything:
+month-specific notices can change the effective rules for specific orders,
+while the rules document and every calculator tool always reflect the
+STANDARD contract only.
 When the reconciliation is complete, call submit_findings exactly once with
 ALL findings. If the books are clean, submit an empty list."""
 
