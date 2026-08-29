@@ -1,0 +1,56 @@
+{
+  "label": "baseline_sonnet-5",
+  "solver": "baseline",
+  "variant": null,
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-29T23:12:18+00:00",
+  "aggregate": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 0,
+    "fn": 2,
+    "clean_case_fps": 0,
+    "input_tokens": 15239,
+    "output_tokens": 32000,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "cost_usd": 0.3505,
+    "seconds": 220.2,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_13",
+      "difficulty": "generalization",
+      "n_truth": 2,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [
+        [
+          "MLB-130012",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130052",
+          "REFUND_AMOUNT_MISMATCH"
+        ]
+      ],
+      "findings": [],
+      "unresolved": [],
+      "steps": 1,
+      "usage": {
+        "input_tokens": 15239,
+        "output_tokens": 32000
+      },
+      "seconds": 220.2,
+      "notes": "",
+      "error": "",
+      "trajectory": ""
+    }
+  ]
+}

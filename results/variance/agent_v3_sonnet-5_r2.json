@@ -1,0 +1,1043 @@
+{
+  "label": "agent_v3_sonnet-5_r2",
+  "solver": "agent",
+  "variant": "v3",
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-29T22:52:09+00:00",
+  "aggregate": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 71,
+    "fp": 0,
+    "fn": 0,
+    "clean_case_fps": 0,
+    "input_tokens": 102,
+    "output_tokens": 58387,
+    "cache_read_tokens": 200723,
+    "cache_write_tokens": 78037,
+    "cost_usd": 0.8193,
+    "seconds": 590.1,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_01",
+      "difficulty": "clean",
+      "n_truth": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [],
+      "unresolved": [],
+      "steps": 3,
+      "usage": {
+        "input_tokens": 6,
+        "output_tokens": 929,
+        "cache_read_input_tokens": 8571,
+        "cache_creation_input_tokens": 1577
+      },
+      "seconds": 14.8,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_01_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_02",
+      "difficulty": "clean",
+      "n_truth": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [],
+      "unresolved": [],
+      "steps": 3,
+      "usage": {
+        "input_tokens": 6,
+        "output_tokens": 639,
+        "cache_read_input_tokens": 8565,
+        "cache_creation_input_tokens": 1571
+      },
+      "seconds": 9.9,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_02_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_03",
+      "difficulty": "normal",
+      "n_truth": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-030005",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030018",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-030022",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-030048",
+          "MISSING_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-030018",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Toys premium commission rate is 17%; expected fee = round(5114.31*0.17) = 869.43. Observed settlement fee is -969.16, i.e. 99.73 BRL more than the contractual commission. Shipping (-21.90) matches expected, so the entire net shortfall (expected net 4222.98 vs observed 4123.25) is due to the excess commission charge.",
+          "impact_brl": "99.73"
+        },
+        {
+          "order_id": "MLB-030005",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Home premium commission rate is 17%; expected fee = round(2006.08*0.17) = 341.03. Observed settlement fee is -400.21, i.e. 59.18 BRL more than contractual commission. Shipping (-39.90, heavy) matches expected, so the full net shortfall (expected net 1625.15 vs observed 1565.97) is caused by the excess commission.",
+          "impact_brl": "59.18"
+        },
+        {
+          "order_id": "MLB-030022",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order gross is 64.74 (single unit, low-ticket electronics premium). Two full payment rows were settled (ST-0300026 and ST-0300057), each with gross 64.74 and fee -16.61, summing to gross 129.48 / net 96.26, instead of a single payment row with expected net 48.13. This is not a legitimate split (a split carries fees only on the first row and splits the gross, it does not duplicate both gross and fee). The seller was paid twice for one sale.",
+          "impact_brl": "-48.13"
+        },
+        {
+          "order_id": "MLB-030048",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order MLB-030048 (fashion classic, gross 42.15, delivered) has zero settlement rows, but per the rules it should generate a payment row with fee -11.73 (13% commission + 6.25 low-ticket fee since unit_price 42.15 < 79) and no shipping (gross < 79), for an expected net of 30.42. No row was ever settled.",
+          "impact_brl": "30.42"
+        }
+      ],
+      "unresolved": [],
+      "steps": 4,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 3981,
+        "cache_read_input_tokens": 12783,
+        "cache_creation_input_tokens": 4622
+      },
+      "seconds": 42.2,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_03_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_04",
+      "difficulty": "normal",
+      "n_truth": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-040050",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-040060",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-049648",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-049648",
+          "type": "ORPHAN_SETTLEMENT",
+          "explanation": "Settlement row ST-0400068 (payment, net 186.31) references order MLB-049648, which does not exist anywhere in the seller's order book. There is no corresponding order to justify this gross=214.15/fee=-27.84/net=186.31 payment, so it is an orphan settlement credited to the seller without a backing order.",
+          "impact_brl": "-186.31"
+        },
+        {
+          "order_id": "MLB-040050",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order MLB-040050 is weight_class 'heavy' with gross 3043.08, so contractual shipping deduction is -39.90 (per fee rules, heavy=39.90). Expected settlement per calc_expected: net 2485.86 (fee -517.32, ship -39.90). Observed settlement row ST-0400057 deducted ship -61.80 instead, yielding net 2463.96. Fee amount (-517.32) matches expected, so the entire -21.90 net delta is due to an excess shipping deduction of 21.90 (61.80-39.90).",
+          "impact_brl": "21.90"
+        },
+        {
+          "order_id": "MLB-040060",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order MLB-040060 is weight_class 'standard' with gross 882.88, so contractual shipping deduction is -21.90. Expected settlement per calc_expected: net 772.69 (fee -88.29, ship -21.90). Observed settlement row ST-0400067 deducted ship -39.90 (the heavy rate) instead, yielding net 754.69. Fee amount (-88.29) matches expected, so the entire -18.00 net delta is due to an excess shipping deduction of 18.00 (39.90-21.90).",
+          "impact_brl": "18.00"
+        }
+      ],
+      "unresolved": [],
+      "steps": 6,
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 3900,
+        "cache_read_input_tokens": 27888,
+        "cache_creation_input_tokens": 7603
+      },
+      "seconds": 44.4,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_04_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_05",
+      "difficulty": "normal",
+      "n_truth": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-050002",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-050013",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-050016",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-050058",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-050080",
+          "MISSING_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-050058",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order refunded (gross 1211.46, refund=1211.46) but only the original payment row (net 1026.18) appears on the statement; the expected refund row (gross -1211.46, fee +145.38, net -1066.08) is missing. Expected order net total = -39.90, observed = 1026.18.",
+          "impact_brl": "-1066.08"
+        },
+        {
+          "order_id": "MLB-050080",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Delivered order (gross 909.36, premium/heavy/home, commission 17% = 154.59, shipping 39.90) has zero settlement rows at all. Expected net 714.87, observed 0.00.",
+          "impact_brl": "714.87"
+        },
+        {
+          "order_id": "MLB-050016",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order status is cancelled, which per rules must have NO settlement rows, yet a payment row exists (gross 363.23, fee -54.48, ship -21.90, net 286.85). Expected net 0.00, observed 286.85.",
+          "impact_brl": "-286.85"
+        },
+        {
+          "order_id": "MLB-050013",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Full refund order (gross 38.40, commission 11.24 at 13%+low-ticket fee). Expected refund row: gross -38.40, fee +11.24 (commission returned), net -27.16. Observed refund row: gross -38.40, fee 0.00, net -38.40 - commission was not returned to seller. Total order net observed -11.24 vs expected 0.00.",
+          "impact_brl": "11.24"
+        },
+        {
+          "order_id": "MLB-050002",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Paid order, toys/premium, gross 434.84, correct commission rate 17% = 73.92. Observed fee charged is -82.62 (approx 19% rate), an overcharge of 8.70. Expected net 339.02, observed net 330.32.",
+          "impact_brl": "8.70"
+        }
+      ],
+      "unresolved": [],
+      "steps": 4,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 3043,
+        "cache_read_input_tokens": 12837,
+        "cache_creation_input_tokens": 5350
+      },
+      "seconds": 30.5,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_05_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_06",
+      "difficulty": "normal",
+      "n_truth": 7,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-060034",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-060038",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-060070",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-060070",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-060087",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-060091",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-060094",
+          "WRONG_SHIPPING_DEDUCTION"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-060034",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Partial refund of 1158.25 out of gross 1930.41 (60%). Per rules, refunded commission should be round_half_up(308.87*0.60)=185.32, giving expected refund row net=-972.93. Observed refund row has marketplace_fee=0.00, net=-1158.25 \u2014 the 185.32 commission return was never credited back to the seller.",
+          "impact_brl": "185.32"
+        },
+        {
+          "order_id": "MLB-060087",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order is 'paid' with gross 236.59 (fashion, premium, standard shipping). Expected payment row: fee -42.59, shipping -21.90, net 172.10. No settlement rows exist at all for this order (0 rows, net 0.00).",
+          "impact_brl": "172.10"
+        },
+        {
+          "order_id": "MLB-060091",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order gross 67.18 (books, classic, low-ticket fee applies) should settle once: fee -19.22, net 47.96. Two identical payment rows (ST-0600112 and ST-0600145) each carry the full gross 67.18 and full fee -19.22 (not a legitimate split, since a split would have fees only on the first row and remaining gross with no fees on the second). Total observed net 95.92 is exactly double the expected 47.96.",
+          "impact_brl": "-47.96"
+        },
+        {
+          "order_id": "MLB-060070",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order gross 131.36, electronics/classic, unit price 65.68<79 so low-ticket fee applies: expected commission = round(131.36*0.11)=14.45 + 6.25*2=12.50 = 26.95. Observed marketplace_fee is -29.41, an overcharge of 2.46.",
+          "impact_brl": "2.46"
+        },
+        {
+          "order_id": "MLB-060070",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' so expected shipping deduction is -21.90. Observed settlement row deducts -39.90 (the 'heavy' rate), an overcharge of 18.00.",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-060094",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' (toys, classic) so expected shipping deduction is -21.90, giving expected net 249.76. Observed row deducts -39.90 (the 'heavy' rate) with commission fee correct at -37.04, giving observed net 231.76 \u2014 an 18.00 shipping overcharge.",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-060038",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order gross 108.54, electronics/premium (16%), unit price 36.18<79 so low-ticket fee applies: expected commission = round(108.54*0.16)=17.37 + 6.25*3=18.75 = 36.12. Observed marketplace_fee is -38.05, an overcharge of 1.93.",
+          "impact_brl": "1.93"
+        }
+      ],
+      "unresolved": [],
+      "steps": 4,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 5888,
+        "cache_read_input_tokens": 12914,
+        "cache_creation_input_tokens": 6230
+      },
+      "seconds": 56.3,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_06_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_07",
+      "difficulty": "normal",
+      "n_truth": 6,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-070003",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-070006",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-070061",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-070067",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-070119",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-079870",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-079870",
+          "type": "ORPHAN_SETTLEMENT",
+          "explanation": "Settlement row ST-0700194 (net 576.43) references order MLB-079870, which does not exist anywhere in the seller's order book. No corresponding order means no expected settlement (expected_net=0.00); the seller received an unexplained 576.43 that is not tied to any sale.",
+          "impact_brl": "-576.43"
+        },
+        {
+          "order_id": "MLB-070061",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order MLB-070061 (delivered, electronics/classic, gross 113.30, standard shipping) has zero settlement rows. Expected settlement per rules: commission 12.46 (11% of 113.30) + shipping 21.90 = expected net 78.94. Seller was never paid.",
+          "impact_brl": "78.94"
+        },
+        {
+          "order_id": "MLB-070067",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order MLB-070067 has status 'cancelled', which per rules must carry NO settlement rows. However a payment row (ST-0700195) was settled: gross 77.33, fee -19.40, net 57.93. The full observed net of 57.93 is an unwarranted payout on a cancelled order.",
+          "impact_brl": "-57.93"
+        },
+        {
+          "order_id": "MLB-070006",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order MLB-070006 is partially_refunded (refund_amount 45.76 of gross 76.26). The payment row (gross 76.26, fee -16.16, net 60.10) matches the expected payment line exactly, but the expected refund row (gross -45.76, fee +9.70, net -36.06) is completely absent from the statement. Expected total net was 24.04 but observed total net is 60.10, a difference of 36.06 that is fully explained by the missing refund row.",
+          "impact_brl": "-36.06"
+        },
+        {
+          "order_id": "MLB-070119",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order MLB-070119 is weight_class 'heavy', so shipping should be 39.90, giving expected net 1756.35-193.20-39.90=1523.25. The observed row deducts shipping of 61.80 (=39.90+21.90, i.e. both heavy and standard rates appear to have been applied), yielding observed net 1501.35. Commission matches (-193.20 both), so the entire -21.90 delta is the excess shipping charge.",
+          "impact_brl": "21.90"
+        },
+        {
+          "order_id": "MLB-070003",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order MLB-070003 is toys/premium, gross 244.74, unit_price 122.37 (>=79 so no low-ticket fee). Contractual commission is 17%: round_half_up(244.74*0.17)=41.61, giving expected net 181.23 (shipping -21.90 matches observed). The statement instead charged a fee of -45.99, 4.38 more than the correct 41.61; shipping is identical in both, so the entire -4.38 net delta is excess commission.",
+          "impact_brl": "4.38"
+        }
+      ],
+      "unresolved": [],
+      "steps": 3,
+      "usage": {
+        "input_tokens": 6,
+        "output_tokens": 4774,
+        "cache_read_input_tokens": 9119,
+        "cache_creation_input_tokens": 5431
+      },
+      "seconds": 46.8,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_07_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_08",
+      "difficulty": "normal",
+      "n_truth": 7,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-080018",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-080068",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-080078",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-080086",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-080113",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-080173",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-080191",
+          "DUPLICATE_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-080191",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order gross is 2602.59 with expected single payment net of 2276.41 (commission 286.28, shipping 39.90). Two identical payment rows (ST-0800221, ST-0800233) each with gross 2602.59, fee -286.28, ship -39.90, net 2276.41 were settled, summing to net 4552.82 - double the expected amount. This is not a legitimate split (which would carry fees only once), it is a full duplicate of the payment.",
+          "impact_brl": "-2276.41"
+        },
+        {
+          "order_id": "MLB-080078",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order status is 'cancelled', which per rules must have NO settlement rows. However a payment row (ST-0800232) was settled with gross 431.24, fee -73.31, ship -21.90, net 336.03. Seller received a payment for an order that was cancelled before payment.",
+          "impact_brl": "-336.03"
+        },
+        {
+          "order_id": "MLB-080173",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order is delivered with gross 130.24 (fashion classic, unit_price<79 so low-ticket fee applies). Expected payment: fee -29.43 (13% commission 16.93 + 6.25*2 low-ticket=12.50), shipping -21.90, net 78.91. No settlement rows exist at all for this order.",
+          "impact_brl": "78.91"
+        },
+        {
+          "order_id": "MLB-080018",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Order partially refunded 344.84 of gross 1149.47 (30%). Per rules, refund row should return proportional commission: fee = +round(137.94*0.30)=+41.38, giving refund net of -303.46 and total order net of 686.17. Observed refund row (ST-0800023) has fee=0.00, net=-344.84, so total order net settled is only 644.79 - the 41.38 commission refund was never credited back to the seller.",
+          "impact_brl": "41.38"
+        },
+        {
+          "order_id": "MLB-080068",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'heavy', so shipping fee should be 39.90 per rules. Settlement row ST-0800078 deducted -61.80 in shipping instead, overcharging the seller by 21.90 (61.80-39.90). Commission was correct (-88.70 = 16% of 554.35 premium electronics), but net came to 403.85 instead of expected 425.75.",
+          "impact_brl": "21.90"
+        },
+        {
+          "order_id": "MLB-080113",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order is fashion/premium, gross 734.75, so commission rate should be 18% => 132.26. Settlement row ST-0800128 charged fee -146.51 instead, overcharging commission by 14.25 (146.51-132.26), producing net 566.34 vs expected 580.59.",
+          "impact_brl": "14.25"
+        },
+        {
+          "order_id": "MLB-080086",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order is electronics/classic, gross 4219.64, so commission rate should be 11% => round(4219.64*0.11)=464.16. Settlement row ST-0800098 charged fee -464.62, a 0.46 overcharge above tolerance, producing net 3715.12 vs expected 3715.58.",
+          "impact_brl": "0.46"
+        }
+      ],
+      "unresolved": [],
+      "steps": 4,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 4666,
+        "cache_read_input_tokens": 12959,
+        "cache_creation_input_tokens": 6945
+      },
+      "seconds": 45.0,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_08_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_09",
+      "difficulty": "normal",
+      "n_truth": 9,
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-090030",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-090036",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090087",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090090",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-090140",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-090140",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-090238",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-090243",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-099824",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-090030",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order fully refunded (gross 3246.00, refund=3246.00) but only the original payment row (net 2686.74) exists on the statement; no refund row was posted. Expected total net per rules = payment(2686.74)+refund(-2726.64) = -39.90, observed = 2686.74. The seller was left holding the full sale proceeds despite the refund.",
+          "impact_brl": "-2726.64"
+        },
+        {
+          "order_id": "MLB-090090",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Order gross 521.19 (fashion premium, 18%) produced two payment rows, each carrying full gross 521.19 AND full fees (-93.81 commission, -21.90 shipping), for observed net 810.96. A legitimate split should have only one row with fees and the second row with the remaining gross and NO fees. Expected net (single settlement) = 405.48. The order was effectively paid out twice.",
+          "impact_brl": "-405.48"
+        },
+        {
+          "order_id": "MLB-099824",
+          "type": "ORPHAN_SETTLEMENT",
+          "explanation": "Settlement row ST-0900298 (gross 425.56, fee -55.32, net 370.24) references order MLB-099824, which does not exist anywhere in the seller's order book. No corresponding sale justifies this payout.",
+          "impact_brl": "-370.24"
+        },
+        {
+          "order_id": "MLB-090140",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Fashion/classic order, gross 1594.57, contractual commission = 13% = 207.29. The payment row charged fee -251.14, i.e. 43.85 more commission than the contract allows.",
+          "impact_brl": "43.85"
+        },
+        {
+          "order_id": "MLB-090140",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Order fully refunded (refund=1594.57). Per rules the refund row must return the commission (+207.29 expected, since gross*13%=207.29) with gross -1594.57. Observed refund row shows fee 0.00 (no commission returned) alongside gross -1594.57, net -1594.57 instead of expected -1387.28. The seller was never credited back the commission on the refunded sale.",
+          "impact_brl": "207.29"
+        },
+        {
+          "order_id": "MLB-090238",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Home/classic order, gross 229.44 (qty3 @76.48, low-ticket fee applies), status=paid, expected settlement net 161.26 (fee -46.28 incl. low-ticket surcharge, shipping -21.90). No settlement rows exist for this order at all.",
+          "impact_brl": "161.26"
+        },
+        {
+          "order_id": "MLB-090087",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Home/classic heavy order, gross 2272.51, contractual commission = 12% = 272.70 (fee -272.70). Observed payment fee is -335.42, an overcharge of 62.72 versus contract.",
+          "impact_brl": "62.72"
+        },
+        {
+          "order_id": "MLB-090036",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Home/premium heavy order, gross 2303.40, contractual commission = 17% = 391.58 (fee -391.58). Observed payment fee is -442.95, an overcharge of 51.37 versus contract.",
+          "impact_brl": "51.37"
+        },
+        {
+          "order_id": "MLB-090243",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Fashion/premium order, weight_class=standard, gross 2534.22 (>=79, so shipping applies at the standard rate of 21.90). The payment row deducted -39.90 (heavy rate) instead of -21.90, an 18.00 excess shipping deduction.",
+          "impact_brl": "18.00"
+        }
+      ],
+      "unresolved": [],
+      "steps": 4,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 7548,
+        "cache_read_input_tokens": 13068,
+        "cache_creation_input_tokens": 7402
+      },
+      "seconds": 76.4,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_09_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_10",
+      "difficulty": "normal",
+      "n_truth": 8,
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-100045",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-100060",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-100069",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-100150",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-100168",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-100187",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-100300",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-109378",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-109378",
+          "type": "ORPHAN_SETTLEMENT",
+          "explanation": "Settlement row ST-1000340 (gross 661.91, fee -86.05, net 575.86) references order MLB-109378, which does not exist anywhere in the seller's order book. There is no order to justify this payout.",
+          "impact_brl": "-575.86"
+        },
+        {
+          "order_id": "MLB-100150",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order is 'paid' (home/classic, gross 419.68, heavy shipping) with expected settlement net 329.42 (fee -50.36, shipping -39.90) per calc_expected, but zero settlement rows exist for this order.",
+          "impact_brl": "329.42"
+        },
+        {
+          "order_id": "MLB-100045",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order status is 'cancelled'; per rules, cancelled orders must have no settlement rows. Instead a payment row ST-1000339 was posted (gross 52.58, fee -11.51, net 41.07), paying out money for an order that should never have settled.",
+          "impact_brl": "-41.07"
+        },
+        {
+          "order_id": "MLB-100069",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' so expected shipping deduction is -21.90 (expected net 336.81), but the settlement row charged shipping of -39.90 (the 'heavy' rate), producing observed net 318.81. Difference of 18.00 (=39.90-21.90) matches the full net delta.",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-100060",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Order is fully refunded (books/premium, gross 74.56, commission 17.43 incl. low-ticket fee). Per rules the refund row must return the commission (fee=+17.43, net=-57.13), but observed refund row ST-1000066 has fee=0.00 and net=-74.56. This leaves the combined order net at -17.43 instead of the expected 0.00.",
+          "impact_brl": "17.43"
+        },
+        {
+          "order_id": "MLB-100168",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Fashion/premium order, gross 406.02, expected commission = 18% * 406.02 = 73.08 (expected net 311.04 with -21.90 shipping). Observed fee charged was -84.49 (observed net 299.63), an overcharge of 11.41 versus the contracted rate.",
+          "impact_brl": "11.41"
+        },
+        {
+          "order_id": "MLB-100300",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order status is 'refunded' (fashion/premium, gross 17.83, full refund). Only the original payment row (net 8.37) is present; no refund row (expected gross -17.83, fee +9.46, net -8.37) was ever posted, leaving the order's settled net at 8.37 instead of the expected 0.00.",
+          "impact_brl": "-8.37"
+        },
+        {
+          "order_id": "MLB-100187",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Books/premium order, gross 2380.47, expected commission = 15% * 2380.47 = 357.07 (expected net 2001.50 with -21.90 shipping). Observed fee charged was -357.75 (observed net 2000.82), an overcharge of 0.68 above tolerance.",
+          "impact_brl": "0.68"
+        }
+      ],
+      "unresolved": [],
+      "steps": 4,
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 6923,
+        "cache_read_input_tokens": 13052,
+        "cache_creation_input_tokens": 6967
+      },
+      "seconds": 65.0,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_10_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_11",
+      "difficulty": "normal",
+      "n_truth": 9,
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-110089",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-110100",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-110151",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-110151",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-110166",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-110265",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-110271",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-110328",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-110334",
+          "REFUND_NOT_SETTLED"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-110271",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order is status=cancelled (should have zero settlement rows per rule 6), but a payment row ST-1100398 was settled with gross 1465.32, fee -175.84, ship -39.90, net 1249.58. Expected net is 0.00.",
+          "impact_brl": "-1249.58"
+        },
+        {
+          "order_id": "MLB-110089",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order is status=paid with expected payment settlement (toys/classic, gross 811.30, 12% commission 97.36, standard shipping 21.90) => expected net 692.04, but no settlement rows exist at all for this order.",
+          "impact_brl": "692.04"
+        },
+        {
+          "order_id": "MLB-110328",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Two identical payment rows (ST-1100368 and ST-1100397) both carry full fee (-29.92) and full shipping (-21.90) on the same gross 272.00, giving observed net 440.36 vs expected single-payment net 220.18. This is not a legitimate split (split settlements carry fees only on the first row); the second row is a full duplicate.",
+          "impact_brl": "-220.18"
+        },
+        {
+          "order_id": "MLB-110334",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order is partially_refunded (refund_amount 240.13, 20% of gross 1200.66) requiring a refund row of gross -240.13, fee +40.82, net -199.31 per rules, but no refund row was settled. Observed net (956.65, payment only) exceeds expected total net (757.34) by 199.31.",
+          "impact_brl": "-199.31"
+        },
+        {
+          "order_id": "MLB-110166",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics/premium commission should be 16% of 1581.29 = 253.01, but settlement row ST-1100185 charged fee -295.70, an overcharge of 42.69 (shipping -39.90 matches heavy weight class correctly).",
+          "impact_brl": "42.69"
+        },
+        {
+          "order_id": "MLB-110151",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Toys/premium commission should be 17% of 203.35 = 34.57, but settlement row ST-1100167 charged fee -37.99, an overcharge of 3.42.",
+          "impact_brl": "3.42"
+        },
+        {
+          "order_id": "MLB-110151",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' so shipping should be 21.90, but settlement row ST-1100167 deducted 39.90 (the 'heavy' rate), an overcharge of 18.00.",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-110265",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' so shipping should be 21.90, but settlement row ST-1100296 deducted 39.90 (heavy rate) while commission (-346.58, correct 18% fashion/premium of 1925.44) was correct. This caused a shortfall of 18.00 in net (expected 1556.96 vs observed 1538.96).",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-110100",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Partial refund of 50% (101.55 of 203.09, books/premium 15% commission=30.46) should return fee of round_half_up(30.46*0.5)=15.23, giving refund row net -86.32. Observed refund row ST-1100109 has fee 0.00 and net -101.55, failing to return the 15.23 commission portion.",
+          "impact_brl": "15.23"
+        }
+      ],
+      "unresolved": [],
+      "steps": 5,
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 6335,
+        "cache_read_input_tokens": 19730,
+        "cache_creation_input_tokens": 8286
+      },
+      "seconds": 61.9,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_11_agent_v3_sonnet-5_r2.jsonl"
+    },
+    {
+      "case": "case_12",
+      "difficulty": "hard",
+      "n_truth": 13,
+      "tp": 13,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-120018",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120048",
+          "DUPLICATE_SETTLEMENT"
+        ],
+        [
+          "MLB-120052",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-120103",
+          "REFUND_NOT_SETTLED"
+        ],
+        [
+          "MLB-120115",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-120125",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120125",
+          "REFUND_AMOUNT_MISMATCH"
+        ],
+        [
+          "MLB-120185",
+          "WRONG_SHIPPING_DEDUCTION"
+        ],
+        [
+          "MLB-120224",
+          "CANCELLED_BUT_SETTLED"
+        ],
+        [
+          "MLB-120236",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120264",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-120328",
+          "MISSING_SETTLEMENT"
+        ],
+        [
+          "MLB-129910",
+          "ORPHAN_SETTLEMENT"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-120328",
+          "type": "MISSING_SETTLEMENT",
+          "explanation": "Order is paid, gross 1482.47 (home/classic, heavy shipping). Expected settlement: fee -177.90, ship -39.90, net 1264.67. No settlement rows exist at all (observed net 0.00).",
+          "impact_brl": "1264.67"
+        },
+        {
+          "order_id": "MLB-129910",
+          "type": "ORPHAN_SETTLEMENT",
+          "explanation": "A payment settlement row (gross 454.05, fee -59.03, net 395.02) exists but order MLB-129910 does not appear anywhere in the seller's order book - no corresponding sale to justify this payout.",
+          "impact_brl": "-395.02"
+        },
+        {
+          "order_id": "MLB-120052",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Partial refund of 1233.56 on gross 6167.82 (20%). Expected refund row: gross -1233.56, fee +160.36 (20% of commission 801.82), net -1073.20. Observed refund row returned fee 0.00 instead of +160.36, so total observed net 4110.54 vs expected 4270.90 (delta -160.36); commission was never returned to the seller on the refunded portion.",
+          "impact_brl": "160.36"
+        },
+        {
+          "order_id": "MLB-120224",
+          "type": "CANCELLED_BUT_SETTLED",
+          "explanation": "Order status is cancelled (pre-payment cancellation), which per rules must have NO settlement rows. A payment row was nonetheless settled: gross 217.59, fee -42.68, ship -21.90, net 153.01.",
+          "impact_brl": "-153.01"
+        },
+        {
+          "order_id": "MLB-120103",
+          "type": "REFUND_NOT_SETTLED",
+          "explanation": "Order status is refunded (full refund of 151.73) but only the original payment row (net 114.66) is present. Expected refund row: gross -151.73, fee +15.17, net -136.56, giving expected total net -21.90. No refund row was ever settled, leaving the seller with 136.56 more than the correct outcome.",
+          "impact_brl": "-136.56"
+        },
+        {
+          "order_id": "MLB-120048",
+          "type": "DUPLICATE_SETTLEMENT",
+          "explanation": "Single order (gross 78.41, electronics premium, low-ticket fee applies) expected one payment row of net 59.61. It was settled TWICE (ST-1200056 and ST-1200460), both with identical gross 78.41/fee -18.80/net 59.61, for an observed total net 119.22 - not a legitimate split (gross doubled to 156.82 vs actual order gross 78.41).",
+          "impact_brl": "-59.61"
+        },
+        {
+          "order_id": "MLB-120115",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' (should ship at 21.90) but the settlement deducted the heavy rate of 39.90. Expected net 321.10 (fee -42.39, ship -21.90); observed net 303.10 (ship -39.90). Overcharge of 18.00 on shipping.",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-120185",
+          "type": "WRONG_SHIPPING_DEDUCTION",
+          "explanation": "Order weight_class is 'standard' (should ship at 21.90) but the settlement deducted the heavy rate of 39.90. Expected net 492.43 (fee -76.85, ship -21.90); observed net 474.43 (ship -39.90). Overcharge of 18.00 on shipping.",
+          "impact_brl": "18.00"
+        },
+        {
+          "order_id": "MLB-120125",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics/classic commission rate is 11%; on gross 106.40 expected commission is 11.70. The payment row charged fee -13.49 instead of -11.70, an overcharge of 1.79.",
+          "impact_brl": "1.79"
+        },
+        {
+          "order_id": "MLB-120125",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Full refund of gross 106.40. Expected refund row should return commission: fee +11.70 (matching the 11% rate), net -94.70. Observed refund row returned fee 0.00, net -106.40, so the seller never got the commission credited back on the refund - a 11.70 shortfall. Combined with the 1.79 fee overcharge on the payment row, this fully explains the order's total net delta of -13.49 (expected -21.90 vs observed -35.39).",
+          "impact_brl": "11.70"
+        },
+        {
+          "order_id": "MLB-120264",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Toys/classic commission rate is 12%; on gross 630.17 expected commission is 75.62. The payment row charged fee -85.20 instead of -75.62, an overcharge of 9.58 (expected net 532.65 vs observed 523.07).",
+          "impact_brl": "9.58"
+        },
+        {
+          "order_id": "MLB-120236",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Books/classic commission rate is 10%; on gross 343.59 expected commission is 34.36. The payment row charged fee -41.64 instead of -34.36, an overcharge of 7.28 (expected net 287.33 vs observed 280.05).",
+          "impact_brl": "7.28"
+        },
+        {
+          "order_id": "MLB-120018",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Toys/classic commission rate is 12%; on gross 2031.52 expected commission is 243.78. The payment row charged fee -244.15 instead of -243.78, an overcharge of 0.37 (expected net 1765.84 vs observed 1765.47), which exceeds the 0.02 rounding tolerance.",
+          "impact_brl": "0.37"
+        }
+      ],
+      "unresolved": [],
+      "steps": 7,
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 9761,
+        "cache_read_input_tokens": 49237,
+        "cache_creation_input_tokens": 16053
+      },
+      "seconds": 96.9,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\variance-frozen\\trajectories\\case_12_agent_v3_sonnet-5_r2.jsonl"
+    }
+  ]
+}

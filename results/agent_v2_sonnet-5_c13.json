@@ -1,0 +1,71 @@
+{
+  "label": "agent_v2_sonnet-5_c13",
+  "solver": "agent",
+  "variant": "v2",
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-29T23:16:22+00:00",
+  "aggregate": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "clean_case_fps": 0,
+    "input_tokens": 18,
+    "output_tokens": 16150,
+    "cache_read_tokens": 134409,
+    "cache_write_tokens": 37132,
+    "cost_usd": 0.2812,
+    "seconds": 164.9,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_13",
+      "difficulty": "generalization",
+      "n_truth": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tp_keys": [
+        [
+          "MLB-130012",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130052",
+          "REFUND_AMOUNT_MISMATCH"
+        ]
+      ],
+      "fp_keys": [],
+      "fn_keys": [],
+      "findings": [
+        {
+          "order_id": "MLB-130012",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Order placed 2026-07-17, electronics/premium, within the July Tech Promo window (2026-07-08 to 2026-07-18) which discounts premium electronics commission from 16% to 14%. Settlement charged commission of 67.89 (16% of gross 424.29), but the correct promo commission is 59.40 (14% of 424.29). Shipping (39.90, heavy) was correct. Expected net = 424.29 - 59.40 - 39.90 = 324.99, but observed net = 316.50, a shortfall of 8.49.",
+          "impact_brl": "8.49"
+        },
+        {
+          "order_id": "MLB-130052",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Partial refund of 3.59 on gross 17.93 (fashion, not covered by any promo). Per the refund rule, the marketplace_fee on the refund row must return round_half_up(total_fee_on_payment * refund%) = round_half_up(8.58 * (3.59/17.93)) = 1.72. The observed refund row shows fee=0.00, i.e. the commission was never returned to the seller. Expected order net total = 9.35 (payment) - 1.87 (refund) = 7.48; observed = 9.35 - 3.59 = 5.76, a shortfall of 1.72.",
+          "impact_brl": "1.72"
+        }
+      ],
+      "unresolved": [],
+      "steps": 9,
+      "usage": {
+        "input_tokens": 18,
+        "output_tokens": 16150,
+        "cache_read_input_tokens": 134409,
+        "cache_creation_input_tokens": 37132
+      },
+      "seconds": 164.9,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\settlement-reconciler\\trajectories\\case_13_agent_v2_sonnet-5.jsonl"
+    }
+  ]
+}

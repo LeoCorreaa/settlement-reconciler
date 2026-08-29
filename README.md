@@ -76,6 +76,10 @@ per-case detail; agent runs also produce one trajectory per case under
 positives for $0.85 in 12 minutes; the single-prompt baseline finds 27% of
 them for $3.75 in 40 minutes. Better, 4.4x cheaper and 3.4x faster at once.
 
+**Variance:** three replicas of the final system on frozen code scored
+**F1 1.000, 1.000 and 1.000** (71/71 each; $0.76/$0.82/$0.90; 559-638s) -
+see `results/variance/`. The headline is stable, not a lucky roll.
+
 ### The scale cliff, case by case (true positives / planted)
 
 | Case (orders) | baseline | agent v1 | agent v2 | agent v3 |
@@ -104,6 +108,31 @@ superseded revisions - v3.0 reproduces at commit `b71bf61`, and the
 pre-hardening probe numbers quoted in the changelog reproduce at `f7dae3a`
 (scaled dataset) and `4aa4bef` (first dataset).
 
+### Judgment under incomplete rules (case_13)
+
+Real marketplaces change fees via plain-text notices. In case_13 a commission
+promo exists ONLY in a notice (`cases/case_13/notices.md`); the settlement
+applies it correctly, but every calculator tool knows just the standard
+contract, so the deterministic scan flags 19 legitimate promo orders as
+suspects - and the one real overcharge (the promo NOT applied) looks
+perfectly correct to it. Two real divergences hide in the month.
+
+| Solver (case_13 only) | F1 | Precision | Recall | False positives |
+|---|---|---|---|---|
+| baseline (notice in prompt) | 0.000 | - | 0.000 | 0 (collapsed entirely) |
+| agent v2, blind (no notice tool) | 0.091 | 0.050 | 0.500 | **19** |
+| agent v2 + get_notices | 0.667 | 1.000 | 0.500 | 0 |
+| agent v2 + get_notices, "both ways" prompt | **1.000** | 1.000 | 1.000 | **0** |
+
+Reading the notice turned 19 false accusations into zero. The remaining miss
+(the scan-invisible divergence) fell to one evidence-driven prompt iteration:
+telling the agent that a notice cuts both ways, so it must re-derive
+expectations for every covered order in both directions. This is the answer
+to "a script could do this": where the rules end, judgment does the work.
+The v3 verifier is deliberately not used here - its canonical impacts encode
+the standard contract and would fight the truth; that boundary is documented,
+not hidden.
+
 ## Improvement Changelog
 
 One entry per meaningful iteration, with the evidence that drove the next
@@ -122,6 +151,9 @@ decision. Probe runs used the earlier dataset revisions noted inline.
 | Full baseline run | Single prompt at its best: streamed 32k ceiling, full fee rules, same model as the agent | **F1 0.422** (recall 0.268), $3.75, 40 min. Perfect through 120 orders, zero from 160 up | The cliff is binary, not gradual: past the size it can hold in working reasoning, the single shot produces nothing at all |
 | v1 size curve | Agent loop with read/paging tools only - the model does all arithmetic itself | 50 orders: 4/4. 120 and 250 orders: **0**, gave up without even submitting | An agent loop without the right tools is *worse* than no agent: v1 falls off at 120 orders where the baseline still held. The unlock was never "make it agentic" - it was deciding which work belongs to tools |
 | Final system (v3, sonnet) | Both verification layers on the strong model | **71/71, F1 1.000, $0.85, 12 min** - vs the baseline's 0.422 at $3.75 in 40 min | Better, 4.4x cheaper and 3.4x faster simultaneously; verification costs nothing when the model is right and pays for itself when it is not |
+| Variance replicas | 3x the final system on frozen code | **F1 1.000 / 1.000 / 1.000** ($0.76/$0.82/$0.90) | The headline is stable, not a lucky roll |
+| case_13: incomplete rules | Promo announced only in a plain-text notice; tools know the standard contract only | Blind agent: **19 false positives** (F1 0.091). With `get_notices`: 0 FPs, F1 0.667 - but it missed the scan-invisible divergence (the promo NOT applied looks correct to standard rules) | Judgment suppressed all the noise; the miss showed the prompt only sent the agent after scan candidates |
+| "Both ways" prompt iteration | One line: a notice cuts both ways - re-derive expectations for every covered order, in both directions | case_13: **2/2, F1 1.000, zero FPs** ($0.28) | Where the rules end, judgment does the work - and one evidence-driven sentence was the whole fix |
 
 ## Main failure mode and hot take
 
@@ -142,8 +174,12 @@ only value-level validation killed the hack. Second, "agentic" is not the
 unlock: our tools-less agent loop (v1) collapsed at 120 orders, EARLIER than
 the plain single prompt. What actually solved the problem was the labor
 split - arithmetic in deterministic tools, attribution in the model, and a
-verifier that refuses to let either fail silently. For a finance workflow, a
-flagged unknown beats a confident error every time.
+verifier that refuses to let either fail silently. And when we deliberately
+broke our tools' knowledge with a promo notice (case_13), the blind
+deterministic pipeline produced nineteen false accusations, while the model
+that read the notice - and was told a notice cuts both ways - scored a clean
+two-for-two. Judgment earns its keep exactly where the rules end. For a
+finance workflow, a flagged unknown beats a confident error every time.
 
 ## Limitations and threats to validity
 
@@ -157,12 +193,16 @@ Stated up front because a careful reviewer will find them anyway:
    restraint (not inventing divergences on clean books or split payouts) at
    volumes where single-shot reasoning collapses. The baseline receives the
    exact same rules document, so the comparison isolates engineering, not
-   knowledge. A generalization case where the tools' knowledge is
-   deliberately incomplete (a fee promotion announced only in prose) is
-   planned to measure judgment beyond the engine - see the changelog.
-2. **One run per configuration so far.** LLM outputs are stochastic; a
-   variance run (3x the final system) is planned before submission. Treat
-   third-decimal differences as noise.
+   knowledge. case_13 measures judgment beyond the engine directly: with the
+   tools' knowledge deliberately incomplete (a fee promotion announced only
+   in prose), the blind agent produces 19 false positives while the
+   notice-reading agent scores 2/2 with zero - see "Judgment under
+   incomplete rules".
+2. **Most configurations were run once.** LLM outputs are stochastic, so we
+   re-ran the final system three times on frozen final code: **F1 1.000 in
+   all three replicas** (71/71 each; cost $0.76/$0.82/$0.90; 559-638s;
+   `results/variance/`). The headline is stable. Non-headline rows are still
+   single runs; treat third-decimal differences as noise.
 3. **Precision is 1.000 everywhere, including the baseline.** Partly genuine
    restraint (clean cases and split-payout traps caught nobody), partly a
    side effect: solvers that collapse produce empty output, which cannot
@@ -179,7 +219,7 @@ Stated up front because a careful reviewer will find them anyway:
 engine.py            deterministic rules engine (single source of truth)
 config.py            model, prices, paths
 datagen/             fee rules + deterministic case generator
-cases/               12 generated cases (committed for reproducibility)
+cases/               13 generated cases: 12-case benchmark + case_13 generalization
 solvers/baseline.py  single-prompt baseline
 solvers/agent/       tools, prompts, manual tool-use loop, verifier
 eval/run.py          scoring harness (F1 vs truth.json)

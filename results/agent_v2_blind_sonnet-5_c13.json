@@ -1,0 +1,257 @@
+{
+  "label": "agent_v2_blind_sonnet-5",
+  "solver": "agent",
+  "variant": "v2",
+  "model": "claude-sonnet-5",
+  "timestamp": "2026-08-29T23:08:38+00:00",
+  "aggregate": {
+    "precision": 0.05,
+    "recall": 0.5,
+    "f1": 0.0909,
+    "tp": 1,
+    "fp": 19,
+    "fn": 1,
+    "clean_case_fps": 0,
+    "input_tokens": 32,
+    "output_tokens": 25564,
+    "cache_read_tokens": 356271,
+    "cache_write_tokens": 58455,
+    "cost_usd": 0.4731,
+    "seconds": 269.7,
+    "errors": 0
+  },
+  "per_case": [
+    {
+      "case": "case_13",
+      "difficulty": "generalization",
+      "n_truth": 2,
+      "tp": 1,
+      "fp": 19,
+      "fn": 1,
+      "tp_keys": [
+        [
+          "MLB-130052",
+          "REFUND_AMOUNT_MISMATCH"
+        ]
+      ],
+      "fp_keys": [
+        [
+          "MLB-130001",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130002",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130004",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130006",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130007",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130008",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130009",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130010",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130011",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130013",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130014",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130083",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130088",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130097",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130107",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130115",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130117",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130132",
+          "FEE_OVERCHARGE"
+        ],
+        [
+          "MLB-130138",
+          "FEE_OVERCHARGE"
+        ]
+      ],
+      "fn_keys": [
+        [
+          "MLB-130012",
+          "FEE_OVERCHARGE"
+        ]
+      ],
+      "findings": [
+        {
+          "order_id": "MLB-130009",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -1081.85 on gross 6761.55 -> expected net 5639.80). Settlement row ST-1300009 applied only 14% (-946.62), yielding observed net 5775.03. Commission under-collected by 135.23.",
+          "impact_brl": "-135.23"
+        },
+        {
+          "order_id": "MLB-130083",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics classic listing: contractual commission is 11% of gross (expected fee -664.35 on gross 6039.57 -> expected net 5335.32). Settlement row ST-1300089 applied only 9% (-543.56), yielding observed net 5456.11. Commission under-collected by 120.79.",
+          "impact_brl": "-120.79"
+        },
+        {
+          "order_id": "MLB-130014",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -631.90 on gross 3949.40 -> expected net 3277.60). Settlement row ST-1300014 applied only 14% (-552.92), yielding observed net 3356.58. Commission under-collected by 78.98.",
+          "impact_brl": "-78.98"
+        },
+        {
+          "order_id": "MLB-130115",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics classic listing: contractual commission is 11% of gross (expected fee -384.76 on gross 3497.78 -> expected net 3073.12). Settlement row ST-1300126 applied only 9% (-314.80), yielding observed net 3143.08. Commission under-collected by 69.96.",
+          "impact_brl": "-69.96"
+        },
+        {
+          "order_id": "MLB-130010",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics classic listing: contractual commission is 11% of gross (expected fee -340.17 on gross 3092.49 -> expected net 2712.42). Settlement row ST-1300010 applied only 9% (-278.32), yielding observed net 2774.27. Commission under-collected by 61.85.",
+          "impact_brl": "-61.85"
+        },
+        {
+          "order_id": "MLB-130107",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -152.94 on gross 955.86 -> expected net 781.02). Settlement row ST-1300117 applied only 14% (-133.82), yielding observed net 800.14. Commission under-collected by 19.12.",
+          "impact_brl": "-19.12"
+        },
+        {
+          "order_id": "MLB-130013",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -126.75 on gross 792.20 -> expected net 625.55). Settlement row ST-1300013 applied only 14% (-110.91), yielding observed net 641.39. Commission under-collected by 15.84.",
+          "impact_brl": "-15.84"
+        },
+        {
+          "order_id": "MLB-130132",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics classic listing: contractual commission is 11% of gross (expected fee -61.54 on gross 559.44 -> expected net 476.00). Settlement row ST-1300141 applied only 9% (-50.35), yielding observed net 487.19. Commission under-collected by 11.19.",
+          "impact_brl": "-11.19"
+        },
+        {
+          "order_id": "MLB-130004",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -72.73 on gross 454.59 -> expected net 341.96). Settlement row ST-1300003 applied only 14% (-63.64), yielding observed net 351.05. Commission under-collected by 9.09.",
+          "impact_brl": "-9.09"
+        },
+        {
+          "order_id": "MLB-130006",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -57.64 on gross 360.25 -> expected net 280.71). Settlement row ST-1300006 applied only 14% (-50.44), yielding observed net 287.91. Commission under-collected by 7.20.",
+          "impact_brl": "-7.20"
+        },
+        {
+          "order_id": "MLB-130002",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -56.25 on gross 351.59 -> expected net 273.44). Settlement row ST-1300002 applied only 14% (-49.22), yielding observed net 280.47. Commission under-collected by 7.03.",
+          "impact_brl": "-7.03"
+        },
+        {
+          "order_id": "MLB-130001",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -30.41 on gross 190.08 -> expected net 137.77). Settlement row ST-1300001 applied only 14% (-26.61), yielding observed net 141.57. Commission under-collected by 3.80.",
+          "impact_brl": "-3.80"
+        },
+        {
+          "order_id": "MLB-130007",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing: contractual commission is 16% of gross (expected fee -22.33 on gross 139.58 -> expected net 95.35). Settlement row ST-1300007 applied only 14% (-19.54), yielding observed net 98.14. Commission under-collected by 2.79.",
+          "impact_brl": "-2.79"
+        },
+        {
+          "order_id": "MLB-130011",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing with low-ticket fee: expected fee -29.38 (16% of 105.52 + 6.25*2 low-ticket) -> expected net 54.24. Settlement row ST-1300011 used 14% instead of 16% (-27.27), yielding observed net 56.35. Commission under-collected by 2.11.",
+          "impact_brl": "-2.11"
+        },
+        {
+          "order_id": "MLB-130052",
+          "type": "REFUND_AMOUNT_MISMATCH",
+          "explanation": "Partial refund (20% of gross 17.93=3.59) on fashion order. Contract requires returning commission proportionally: expected refund fee +1.72 (13% commission 8.58 * 20%), expected net total 7.48. Observed refund row ST-1300056 returned fee=0.00, giving observed net 5.76. Seller was shorted 1.72 in commission that should have been credited back.",
+          "impact_brl": "1.72"
+        },
+        {
+          "order_id": "MLB-130138",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics classic listing with low-ticket fee: expected fee -9.83 (11% of 32.57 + 6.25) -> expected net 22.74. Settlement row ST-1300148 used 9% instead of 11% (-9.18), yielding observed net 23.39. Commission under-collected by 0.65.",
+          "impact_brl": "-0.65"
+        },
+        {
+          "order_id": "MLB-130117",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing with low-ticket fee: expected fee -11.37 (16% of 31.99 + 6.25) -> expected net 20.62. Settlement row ST-1300128 used 14% instead of 16% (-10.73), yielding observed net 21.26. Commission under-collected by 0.64.",
+          "impact_brl": "-0.64"
+        },
+        {
+          "order_id": "MLB-130008",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing with low-ticket fee: expected fee -11.04 (16% of 29.92 + 6.25) -> expected net 18.88. Settlement row ST-1300008 used 14% instead of 16% (-10.44), yielding observed net 19.48. Commission under-collected by 0.60.",
+          "impact_brl": "-0.60"
+        },
+        {
+          "order_id": "MLB-130088",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium listing with low-ticket fee: expected fee -9.44 (16% of 19.96 + 6.25) -> expected net 10.52. Settlement row ST-1300095 used 14% instead of 16% (-9.04), yielding observed net 10.92. Commission under-collected by 0.40.",
+          "impact_brl": "-0.40"
+        },
+        {
+          "order_id": "MLB-130097",
+          "type": "FEE_OVERCHARGE",
+          "explanation": "Electronics premium order, partially refunded. Payment fee should be -9.84 (16% of 22.42 + 6.25 low-ticket) but settlement applied 14% (-9.39); refund fee correspondingly applied at the same wrong 14%-derived commission (+6.57 vs expected +6.89). Net effect: expected total net 3.78 vs observed 3.91, a 0.13 favorable delta caused by the same mis-applied electronics commission rate.",
+          "impact_brl": "-0.13"
+        }
+      ],
+      "unresolved": [],
+      "steps": 16,
+      "usage": {
+        "input_tokens": 32,
+        "output_tokens": 25564,
+        "cache_read_input_tokens": 356271,
+        "cache_creation_input_tokens": 58455
+      },
+      "seconds": 269.7,
+      "notes": "",
+      "error": "",
+      "trajectory": "C:\\Users\\leona\\dev\\settlement-reconciler\\trajectories\\case_13_agent_v2_sonnet-5_blind.jsonl"
+    }
+  ]
+}

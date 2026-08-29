@@ -24,7 +24,11 @@ Missing a real divergence and inventing a false one are equally bad.
 If a get_notices tool is available, read it BEFORE concluding anything:
 month-specific notices can change the effective rules for specific orders,
 while the rules document and every calculator tool always reflect the
-STANDARD contract only.
+STANDARD contract only. A notice cuts BOTH ways: orders the scan flags may
+be legitimate under the notice, and orders the scan does NOT flag may still
+be wrong under it (the scan can only see the standard rules). Re-derive the
+expectation yourself for EVERY order the notice covers, in both directions,
+before submitting.
 When the reconciliation is complete, call submit_findings exactly once with
 ALL findings. If the books are clean, submit an empty list."""
 

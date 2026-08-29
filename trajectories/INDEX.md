@@ -53,3 +53,5 @@ One JSONL per run (raw) plus a readable Markdown rendering.
 - [case_12_agent_v2_sonnet-5](rendered/case_12_agent_v2_sonnet-5.md) (raw: [case_12_agent_v2_sonnet-5.jsonl](../trajectories/case_12_agent_v2_sonnet-5.jsonl))
 - [case_12_agent_v3_haiku-4-5](rendered/case_12_agent_v3_haiku-4-5.md) (raw: [case_12_agent_v3_haiku-4-5.jsonl](../trajectories/case_12_agent_v3_haiku-4-5.jsonl))
 - [case_12_agent_v3_sonnet-5](rendered/case_12_agent_v3_sonnet-5.md) (raw: [case_12_agent_v3_sonnet-5.jsonl](../trajectories/case_12_agent_v3_sonnet-5.jsonl))
+- [case_13_agent_v2_sonnet-5](rendered/case_13_agent_v2_sonnet-5.md) (raw: [case_13_agent_v2_sonnet-5.jsonl](../trajectories/case_13_agent_v2_sonnet-5.jsonl))
+- [case_13_agent_v2_sonnet-5_blind](rendered/case_13_agent_v2_sonnet-5_blind.md) (raw: [case_13_agent_v2_sonnet-5_blind.jsonl](../trajectories/case_13_agent_v2_sonnet-5_blind.jsonl))

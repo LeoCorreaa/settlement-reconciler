@@ -81,6 +81,9 @@ def main() -> None:
     if args.no_notices:
         base += "_blind"
     label = f"{base}_{model_tag}" + (f"_{args.tag}" if args.tag else "")
+    if args.cases != "all":
+        # subset runs must never overwrite the full-benchmark evidence
+        label += "_" + args.cases.replace("case_", "c").replace(",", "-")
     if args.cases == "all":
         # "all" means the standard 12-case benchmark; special cases (e.g. the
         # generalization case_13) run only when named explicitly.

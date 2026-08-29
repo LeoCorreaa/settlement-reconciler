@@ -1,0 +1,61 @@
+solver=agent_v2_sonnet-5 model=claude-sonnet-5 cases=1
+
+case_13 [generalization] truth= 2 tp= 1 fp= 0 fn= 1 steps= 4 tok=  5274   55.3s
+    FN MLB-130012 FEE_OVERCHARGE
+
+=== agent_v2_sonnet-5 aggregate ===
+precision=1.000 recall=0.500 F1=0.667 (tp=1 fp=0 fn=1, clean-case FPs=0)
+tokens: in=8 out=5,266 cache_read=17,079 cache_write=11,451 cost=$0.08 time=55s errors=0
+
+README row:
+| agent_v2_sonnet-5 | 0.667 | 1.000 | 0.500 | 0 | $0.08 | 55s |
+
+saved C:\Users\leona\dev\settlement-reconciler\results\agent_v2_sonnet-5.json
+solver=agent_v2_blind_sonnet-5 model=claude-sonnet-5 cases=1
+
+case_13 [generalization] truth= 2 tp= 1 fp=19 fn= 1 steps=16 tok= 25596  269.7s
+    FP MLB-130001 FEE_OVERCHARGE
+    FP MLB-130002 FEE_OVERCHARGE
+    FP MLB-130004 FEE_OVERCHARGE
+    FP MLB-130006 FEE_OVERCHARGE
+    FP MLB-130007 FEE_OVERCHARGE
+    FP MLB-130008 FEE_OVERCHARGE
+    FP MLB-130009 FEE_OVERCHARGE
+    FP MLB-130010 FEE_OVERCHARGE
+    FP MLB-130011 FEE_OVERCHARGE
+    FP MLB-130013 FEE_OVERCHARGE
+    FP MLB-130014 FEE_OVERCHARGE
+    FP MLB-130083 FEE_OVERCHARGE
+    FP MLB-130088 FEE_OVERCHARGE
+    FP MLB-130097 FEE_OVERCHARGE
+    FP MLB-130107 FEE_OVERCHARGE
+    FP MLB-130115 FEE_OVERCHARGE
+    FP MLB-130117 FEE_OVERCHARGE
+    FP MLB-130132 FEE_OVERCHARGE
+    FP MLB-130138 FEE_OVERCHARGE
+    FN MLB-130012 FEE_OVERCHARGE
+
+=== agent_v2_blind_sonnet-5 aggregate ===
+precision=0.050 recall=0.500 F1=0.091 (tp=1 fp=19 fn=1, clean-case FPs=0)
+tokens: in=32 out=25,564 cache_read=356,271 cache_write=58,455 cost=$0.47 time=270s errors=0
+
+README row:
+| agent_v2_blind_sonnet-5 | 0.091 | 0.050 | 0.500 | 0 | $0.47 | 270s |
+
+saved C:\Users\leona\dev\settlement-reconciler\results\agent_v2_blind_sonnet-5.json
+solver=baseline_sonnet-5 model=claude-sonnet-5 cases=1
+
+case_13 [generalization] truth= 2 tp= 0 fp= 0 fn= 2 steps= 1 tok= 47239  220.2s
+    FN MLB-130012 FEE_OVERCHARGE
+    FN MLB-130052 REFUND_AMOUNT_MISMATCH
+
+=== baseline_sonnet-5 aggregate ===
+precision=0.000 recall=0.000 F1=0.000 (tp=0 fp=0 fn=2, clean-case FPs=0)
+tokens: in=15,239 out=32,000 cache_read=0 cache_write=0 cost=$0.35 time=220s errors=0
+
+README row:
+| baseline_sonnet-5 | 0.000 | 0.000 | 0.000 | 0 | $0.35 | 220s |
+
+saved C:\Users\leona\dev\settlement-reconciler\results\baseline_sonnet-5.json
+
+[exited with code 0]
