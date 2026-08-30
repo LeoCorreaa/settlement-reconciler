@@ -27,7 +27,7 @@ class Trajectory:
     def __init__(self, path: Path):
         self.path = path
         path.parent.mkdir(parents=True, exist_ok=True)
-        self.fh = path.open("w", encoding="utf-8")
+        self.fh = path.open("w", encoding="utf-8", newline="\n")
 
     def log(self, event: str, **data) -> None:
         record = {"ts": round(time.time(), 3), "event": event, **data}

@@ -93,7 +93,7 @@ def render(jsonl_path: Path, out_dir: Path) -> Path:
 
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / (jsonl_path.stem + ".md")
-    out_path.write_text("\n".join(lines), encoding="utf-8")
+    out_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
     return out_path
 
 
@@ -110,7 +110,7 @@ def main() -> None:
         index.append(f"- [{out_path.stem}](rendered/{out_path.name}) "
                      f"(raw: [{jsonl_path.name}](../trajectories/{jsonl_path.name}))")
         print(f"rendered {out_path.name}")
-    (config.TRAJECTORIES_DIR / "INDEX.md").write_text("\n".join(index) + "\n", encoding="utf-8")
+    (config.TRAJECTORIES_DIR / "INDEX.md").write_text("\n".join(index) + "\n", encoding="utf-8", newline="\n")
     print(f"{len(jsonl_files)} trajectories rendered to {out_dir}")
 
 

@@ -191,7 +191,7 @@ def main() -> None:
         "per_case": per_case,
     }
     out_path = config.RESULTS_DIR / f"{label}.json"
-    out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"\nsaved {out_path}")
 
 

@@ -117,7 +117,7 @@ def main() -> None:
             continue
         report = render_case(entry, payload["model"])
         out_path = REPORTS_DIR / f"{entry['case']}_{payload['label']}.md"
-        out_path.write_text(report, encoding="utf-8")
+        out_path.write_text(report, encoding="utf-8", newline="\n")
         print(f"wrote {out_path}")
 
 

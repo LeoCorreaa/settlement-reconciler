@@ -416,8 +416,9 @@ def write_case(case_dir: Path, orders: list[dict], book: SettlementBook,
     truths = sorted(truths, key=lambda t: (t["order_id"], t["type"]))
     (case_dir / "truth.json").write_text(
         json.dumps({"case_id": meta["case_id"], "divergences": truths}, indent=2) + "\n",
-        encoding="utf-8")
-    (case_dir / "case.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+        encoding="utf-8", newline="\n")
+    (case_dir / "case.json").write_text(json.dumps(meta, indent=2) + "\n",
+                                        encoding="utf-8", newline="\n")
 
 
 def generate_case(spec: tuple[str, int, str, list[str]], schedule: dict) -> int:
@@ -555,7 +556,8 @@ def generate_case13(schedule: dict) -> int:
         "promo_eligible_orders": sorted(o["order_id"] for o in eligible),
     }
     write_case(config.CASES_DIR / case_id, orders, book, truths, meta)
-    (config.CASES_DIR / case_id / "notices.md").write_text(NOTICE_TEXT, encoding="utf-8")
+    (config.CASES_DIR / case_id / "notices.md").write_text(NOTICE_TEXT, encoding="utf-8",
+                                                           newline="\n")
     print(f"{case_id}: {n_orders} orders, {len(book.rows)} settlement rows, "
           f"{len(truths)} REAL divergences + {len(eligible)} promo orders as scan noise "
           f"(generalization)")
