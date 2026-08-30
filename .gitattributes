@@ -1,0 +1,7 @@
+# The dataset is regenerated deterministically (LF); force LF everywhere so
+# a fresh clone + `python -m datagen.generate` leaves `git status` clean on
+# every platform (Windows included).
+* text=auto eol=lf
+*.png binary
+*.mp4 binary
+*.pdf binary

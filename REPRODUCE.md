@@ -8,6 +8,11 @@ evaluation is roughly 30-60 minutes and costs a few USD in API usage
 
 - Python 3.11+ (developed on 3.12)
 - An Anthropic API key: https://console.anthropic.com
+- Windows note: clone into a SHORT path (e.g. `C:\src`) or enable Windows
+  long-path support - the Anthropic SDK ships some very long file names and
+  `pip install` can hit the legacy 260-character path limit inside deep
+  directories. Line endings are pinned to LF via `.gitattributes`, so the
+  determinism check below works on every platform.
 
 ## 2. Setup
 
