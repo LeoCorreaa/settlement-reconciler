@@ -2,7 +2,7 @@
 
 Fill the form at: challenge dashboard > Submissions > New Submission.
 Paste each block into the matching field; trim to fit character limits if a
-field is shorter. Replace `[VIDEO_URL]` with the unlisted YouTube link.
+field is shorter.
 
 ---
 
@@ -83,7 +83,7 @@ Limitations are stated up front in the README.
 ## Links
 
 - Repository: https://github.com/LeoCorreaa/settlement-reconciler
-- Video (5 min): [VIDEO_URL]
+- Video (under 5 min): https://youtu.be/VE6iOZbgbOc
 - Reproduction guide: https://github.com/LeoCorreaa/settlement-reconciler/blob/main/REPRODUCE.md
 - Improvement Changelog: https://github.com/LeoCorreaa/settlement-reconciler#improvement-changelog
 - Agent trajectories: https://github.com/LeoCorreaa/settlement-reconciler/tree/main/trajectories
